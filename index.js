@@ -54,19 +54,30 @@ client.on('messageCreate', async (message) => {
   const command = args.shift().toLowerCase();
 
     // 🧹 Clear messages
-  if (command === "!clear") {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
-      return message.reply("❌ You don't have permission.");
+ // 🧹 CLEAR
+if (command === "clear") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
+    return message.reply("❌ You don't have permission to manage messages.");
 
-    const amount = parseInt(args[0]);
-    if (!amount || amount < 1 || amount > 100)
-      return message.reply("⚠️ Enter number between 1-100.");
+  const amount = parseInt(args[0]);
 
+  if (!amount || isNaN(amount))
+    return message.reply("⚠️ Please provide a number. Example: !clear 10");
+
+  if (amount < 1 || amount > 100)
+    return message.reply("⚠️ You can delete between 1 and 100 messages.");
+
+  try {
     await message.channel.bulkDelete(amount, true);
-    const msg = await message.channel.send(`🧹 Deleted ${amount} messages.`);
-    setTimeout(() => msg.delete(), 3000);
-  }
 
+    const confirm = await message.channel.send(`🧹 Deleted ${amount} messages.`);
+    setTimeout(() => confirm.delete(), 3000);
+
+  } catch (error) {
+    console.error(error);
+    message.reply("⚠️ I cannot delete messages older than 14 days.");
+  }
+}
   // 🔊 SAY
 if (command === "say") {
   if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
@@ -198,6 +209,7 @@ if (command === "mention") {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
