@@ -1,4 +1,8 @@
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { 
+  Client, 
+  GatewayIntentBits, 
+  PermissionsBitField 
+} = require('discord.js'); 
 
 const client = new Client({
   intents: [
@@ -32,12 +36,6 @@ client.on('guildMemberAdd', member => {
 });
 
 // 🔐 Replace with your bot token
-
-const { 
-  Client, 
-  GatewayIntentBits, 
-  PermissionsBitField 
-} = require('discord.js');
 
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
@@ -109,6 +107,7 @@ client.login(process.env.TOKEN);
 
 console.log("Token length:", process.env.TOKEN?.length);
 client.login(process.env.TOKEN);
+
 
 
 
