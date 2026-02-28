@@ -53,6 +53,20 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
+    // 🧹 Clear messages
+  if (command === "!clear") {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
+      return message.reply("❌ You don't have permission.");
+
+    const amount = parseInt(args[0]);
+    if (!amount || amount < 1 || amount > 100)
+      return message.reply("⚠️ Enter number between 1-100.");
+
+    await message.channel.bulkDelete(amount, true);
+    const msg = await message.channel.send(`🧹 Deleted ${amount} messages.`);
+    setTimeout(() => msg.delete(), 3000);
+  }
+
   // 🔊 SAY
 if (command === "say") {
   if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
@@ -184,5 +198,6 @@ if (command === "mention") {
 });
 
 client.login(process.env.TOKEN);
+
 
 
