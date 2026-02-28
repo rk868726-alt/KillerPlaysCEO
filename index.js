@@ -1,58 +1,36 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const fs = require('fs');
+const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
-  ]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers
+    ],
+    partials: [Partials.Channel]
 });
 
-client.commands = new Collection();
-
-// Load commands
-const commandFiles = fs.readdirSync('./commands');
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.data.name, command);
-}
-
-// Ready Event
+// Bot Ready Event
 client.once('ready', () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+    console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-// Interaction Handler
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'Error executing command.', ephemeral: true });
-  }
-});
-
-// Auto Moderation
+// Ping Command
 client.on('messageCreate', message => {
-  if (message.author.bot) return;
+    if (message.author.bot) return;
 
-  const bannedWords = ["badword1", "badword2"];
-  if (bannedWords.some(word => message.content.toLowerCase().includes(word))) {
-    message.delete();
-    message.channel.send(`${message.author}, bad language is not allowed.`);
-  }
-
-  if (message.content.includes("http://") || message.content.includes("https://")) {
-    message.delete();
-    message.channel.send(`${message.author}, links are not allowed.`);
-  }
+    if (message.content === '!ping') {
+        message.reply('🏓 Pong!');
+    }
 });
 
-client.login(process.env.TOKEN);
+// Welcome Message
+client.on('guildMemberAdd', member => {
+    const channel = member.guild.systemChannel;
+    if (channel) {
+        channel.send(`🎉 Welcome to the server, ${member.user}!`);
+    }
+});
+
+// 🔐 Replace with your bot token
+client.login('YOUR_BOT_TOKEN_HERE');
