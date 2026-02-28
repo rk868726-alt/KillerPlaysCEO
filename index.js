@@ -45,6 +45,25 @@ client.on('messageCreate', async (message) => {
     return message.channel.send(text);
   }
 
+   // 🔇 AUTO MUTE AFTER 3 WARNS
+    if (db[member.id] >= 3) {
+      let muteRole = message.guild.roles.cache.find(r => r.name === "Muted");
+
+      if (!muteRole) {
+        muteRole = await message.guild.roles.create({
+          name: "Muted",
+          permissions: []
+        });
+
+        message.guild.channels.cache.forEach(async (channel) => {
+          await channel.permissionOverwrites.create(muteRole, {
+            SendMessages: false,
+            Speak: false
+          });
+        });
+      }
+
+
   // 📢 MENTION
   if (command === "mention") {
     const member = message.mentions.members.first();
@@ -130,4 +149,5 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
