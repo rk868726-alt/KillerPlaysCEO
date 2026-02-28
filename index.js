@@ -47,7 +47,7 @@ client.on('messageCreate', async (message) => {
   }
 
   // ===== COMMANDS =====
-  const prefix = "/";
+  const prefix = "\";
   if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -198,6 +198,7 @@ if (command === "mention") {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
