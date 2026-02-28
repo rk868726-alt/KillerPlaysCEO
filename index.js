@@ -34,4 +34,6 @@ client.on('guildMemberAdd', member => {
 
 // 🔐 Replace with your bot token
 
-client.login('MTQ1MTA5MTQ0NzAzMjg0NDQyOQ.G6w_jz.BwjnytyRHZ2HFWntV3e-3uWNi5dEvkAFuJOhOM');
+console.log("Token length:", process.env.TOKEN?.length);
+client.login(process.env.TOKEN);
+
