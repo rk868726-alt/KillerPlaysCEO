@@ -33,4 +33,5 @@ client.on('guildMemberAdd', member => {
 });
 
 // 🔐 Replace with your bot token
-client.login('MTQ1MTA5MTQ0NzAzMjg0NDQyOQ.G-525q.X-2y86hQ_0A0cqF44HJJsbdqALXDyFYq5Gtv44');
+
+client.login('MTQ1MTA5MTQ0NzAzMjg0NDQyOQ.G6w_jz.BwjnytyRHZ2HFWntV3e-3uWNi5dEvkAFuJOhOM');
