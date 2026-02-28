@@ -33,4 +33,5 @@ client.on('guildMemberAdd', member => {
 });
 
 // 🔐 Replace with your bot token
-client.login('YOUR_BOT_TOKEN_HERE');
+client.login(process.env.TOKEN);
+
