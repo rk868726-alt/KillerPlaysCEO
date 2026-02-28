@@ -53,6 +53,26 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
+  // 🔊 SAY
+if (command === "say") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
+    return message.reply("No permission.");
+
+  const text = args.join(" ");
+  if (!text) return message.reply("Provide a message to say.");
+
+  await message.delete();
+  return message.channel.send(text);
+  }
+
+  // 📢 MENTION
+if (command === "mention") {
+  const member = message.mentions.members.first();
+  if (!member) return message.reply("Mention a user.");
+
+  return message.channel.send(`${member} you were mentioned by ${message.author}`);
+}
+
   // ⚠ WARN
   if (command === "warn") {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers))
@@ -164,3 +184,4 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.TOKEN);
+
