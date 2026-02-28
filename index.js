@@ -27,6 +27,17 @@ client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
+client.on('messageCreate', async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  // 🚫 Anti-Link
+  if (message.content.includes("http://") || message.content.includes("https://")) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      await message.delete();
+      return message.channel.send(`${message.author}, links are not allowed.`);
+    }
+  }
+
 // ===== COMMANDS =====
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
@@ -130,6 +141,7 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
