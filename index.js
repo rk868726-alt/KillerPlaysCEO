@@ -70,7 +70,7 @@ if (command === "mention") {
   const member = message.mentions.members.first();
   if (!member) return message.reply("Mention a user.");
 
-  return message.channel.send(`${member} you were mentioned by ${message.author}`);
+  return message.channel.send(`${member}`);
 }
 
   // ⚠ WARN
@@ -184,4 +184,5 @@ if (command === "mention") {
 });
 
 client.login(process.env.TOKEN);
+
 
