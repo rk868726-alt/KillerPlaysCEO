@@ -1,14 +1,10 @@
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
-    ],
-    partials: [Partials.Channel]
-});
+const { 
+  Client, 
+  GatewayIntentBits, 
+  PermissionsBitField 
+} = require('discord.js');
 
 // Bot Ready Event
 client.once('ready', () => {
@@ -119,5 +115,6 @@ client.login(process.env.TOKEN);
 
 console.log("Token length:", process.env.TOKEN?.length);
 client.login(process.env.TOKEN);
+
 
 
