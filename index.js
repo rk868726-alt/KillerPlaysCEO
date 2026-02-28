@@ -49,7 +49,7 @@ client.on('messageCreate', async (message) => {
   if (command === "mention") {
     const member = message.mentions.members.first();
     if (!member) return message.reply("Mention someone.");
-    return message.channel.send(`${member} you were mentioned by ${message.author}`);
+    return message.channel.send(`${member}`);
   }
 
   // 🔨 BAN
@@ -130,3 +130,4 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.TOKEN);
+
