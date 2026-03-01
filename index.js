@@ -61,6 +61,26 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
+  // ✅ SETUP VERIFICATION PANEL
+if (command === "setupverify") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("No permission.");
+
+  const button = new ButtonBuilder()
+    .setCustomId('verify_button')
+    .setLabel('✅ Verify')
+    .setStyle(ButtonStyle.Success);
+
+  const row = new ActionRowBuilder().addComponents(button);
+
+  await message.channel.send({
+    content: "Click the button below to verify yourself.",
+    components: [row]
+  });
+
+  message.delete();
+}
+
     // 🧹 Clear messages
  // 🧹 CLEAR
 if (command === "clear") {
@@ -216,7 +236,32 @@ if (command === "mention") {
   }
 });
 
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isButton()) return;
+
+  if (interaction.customId === 'verify_button') {
+
+    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
+    const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
+
+    if (!verifiedRole)
+      return interaction.reply({ content: "Verified role not found.", ephemeral: true });
+
+    await interaction.member.roles.add(verifiedRole);
+
+    if (unverifiedRole) {
+      await interaction.member.roles.remove(unverifiedRole);
+    }
+
+    await interaction.reply({
+      content: "🎉 You are now verified!",
+      ephemeral: true
+    });
+  }
+});
+
 client.login(process.env.TOKEN);
+
 
 
 
