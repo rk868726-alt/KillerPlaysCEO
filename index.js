@@ -1,3 +1,4 @@
+const ffmpeg = require('ffmpeg-static');
 const { 
   joinVoiceChannel, 
   createAudioPlayer, 
@@ -200,8 +201,9 @@ if (db.autoresponder) {
     const stream = await play.stream(yt[0].url);
 
     const resource = createAudioResource(stream.stream, {
-      inputType: stream.type
-    });
+  inputType: stream.type,
+  inlineVolume: true
+});
 
     player.play(resource);
     connection.subscribe(player);
@@ -590,6 +592,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
