@@ -77,6 +77,41 @@ if (message.mentions.has(client.user)) {
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  client.on('messageCreate', async (message) => {
+  if (message.author.bot || !message.guild) return;
+
+  // ===== AI CHAT (PASTE HERE) =====
+  if (message.mentions.has(client.user)) {
+    try {
+      const userMessage = message.content
+        .replace(`<@${client.user.id}>`, "")
+        .trim();
+
+      if (!userMessage) return;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "You are a friendly Discord bot." },
+          { role: "user", content: userMessage }
+        ],
+      });
+
+      await message.reply(response.choices[0].message.content);
+
+    } catch (error) {
+      console.error(error);
+      message.reply("AI error.");
+    }
+  }
+
+  // ===== YOUR PREFIX COMMANDS BELOW =====
+  const prefix = "!";
+  if (!message.content.startsWith(prefix)) return;
+
+  // your commands here...
+});
+
   // 🚫 Anti-Link
   if (message.content.includes("http://") || message.content.includes("https://")) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
@@ -455,6 +490,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
