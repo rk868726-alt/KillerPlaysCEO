@@ -47,14 +47,6 @@ function saveDB(data) {
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
-
-  // ===== YOUR PREFIX COMMANDS BELOW =====
-  const prefix = "!";
-  if (!message.content.startsWith(prefix)) return;
-
-  // your commands here...
-});
-
   // 🚫 Anti-Link
   if (message.content.includes("http://") || message.content.includes("https://")) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
@@ -433,6 +425,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
