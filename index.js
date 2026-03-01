@@ -31,6 +31,25 @@ function saveDB(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
+// ===== AUTO RESPONDER =====
+const db = loadDB();
+
+if (db.autoresponder) {
+  const trigger = message.content.toLowerCase();
+
+  if (db.autoresponder[trigger]) {
+    const data = db.autoresponder[trigger];
+
+    if (data.text) {
+      message.channel.send(data.text);
+    }
+
+    if (data.gif) {
+      message.channel.send(data.gif);
+    }
+  }
+}
+
 // ===== READY =====
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
@@ -120,6 +139,56 @@ if (command === "clear") {
     message.reply("⚠️ I cannot delete messages older than 14 days.");
   }
 }
+
+  if (command === "addreply") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("No permission.");
+
+  const trigger = args.shift()?.toLowerCase();
+  if (!trigger) return message.reply("Usage: !addreply hello Your text [gif link optional]");
+
+  let gif = null;
+
+  // detect gif link
+  const gifIndex = args.findIndex(arg => arg.startsWith("http"));
+
+  if (gifIndex !== -1) {
+    gif = args[gifIndex];
+    args.splice(gifIndex, 1);
+  }
+
+  const text = args.join(" ");
+
+  const db = loadDB();
+
+  db.autoresponder[trigger] = {
+    text: text || null,
+    gif: gif || null
+  };
+
+  saveDB(db);
+
+  message.reply(`✅ Auto response added for: ${trigger}`);
+}
+
+  if (command === "removereply") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("No permission.");
+
+  const trigger = args[0]?.toLowerCase();
+  if (!trigger) return message.reply("Usage: !removereply hello");
+
+  const db = loadDB();
+
+  if (!db.autoresponder[trigger])
+    return message.reply("Trigger not found.");
+
+  delete db.autoresponder[trigger];
+  saveDB(db);
+
+  message.reply(`❌ Auto response removed for: ${trigger}`);
+}
+  
   // 🔊 SAY
 if (command === "say") {
   if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
@@ -286,6 +355,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
