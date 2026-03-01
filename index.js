@@ -36,25 +36,6 @@ function saveDB(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
-// ===== AUTO RESPONDER =====
-const db = loadDB();
-
-if (db.autoresponder) {
-  const trigger = message.content.toLowerCase();
-
-  if (db.autoresponder[trigger]) {
-    const data = db.autoresponder[trigger];
-
-    if (data.text) {
-      message.channel.send(data.text);
-    }
-
-    if (data.gif) {
-      message.channel.send(data.gif);
-    }
-  }
-}
-
 // ===== READY =====
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
@@ -80,16 +61,24 @@ client.on('messageCreate', async (message) => {
   }
 
   // ===== AUTO RESPONDER =====
+// ===== AUTO RESPONDER =====
 const db = loadDB();
 
 if (db.autoresponder) {
   const trigger = message.content.toLowerCase();
 
   if (db.autoresponder[trigger]) {
-    message.channel.send(db.autoresponder[trigger]);
+    const data = db.autoresponder[trigger];
+
+    if (data.text) {
+      message.channel.send(data.text);
+    }
+
+    if (data.gif) {
+      message.channel.send(data.gif);
+    }
   }
 }
-
   // ===== COMMANDS =====
   const prefix = "!";
   if (!message.content.startsWith(prefix)) return;
@@ -371,6 +360,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
