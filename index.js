@@ -21,7 +21,12 @@ const client = new Client({
 
 // ===== DATABASE =====
 const DB_FILE = './database.json';
-if (!fs.existsSync(DB_FILE)) fs.writeFileSync(DB_FILE, JSON.stringify({}));
+if (!fs.existsSync(DB_FILE)) {
+  fs.writeFileSync(DB_FILE, JSON.stringify({
+    warns: {},
+    autoresponder: {}
+  }, null, 2));
+}
 
 function loadDB() {
   return JSON.parse(fs.readFileSync(DB_FILE));
@@ -73,6 +78,17 @@ client.on('messageCreate', async (message) => {
     await message.delete();
     return message.channel.send(`${message.author}, bad language is not allowed.`);
   }
+
+  // ===== AUTO RESPONDER =====
+const db = loadDB();
+
+if (db.autoresponder) {
+  const trigger = message.content.toLowerCase();
+
+  if (db.autoresponder[trigger]) {
+    message.channel.send(db.autoresponder[trigger]);
+  }
+}
 
   // ===== COMMANDS =====
   const prefix = "!";
@@ -355,6 +371,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
