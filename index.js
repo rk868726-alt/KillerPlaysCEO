@@ -393,11 +393,11 @@ client.on("messageReactionAdd", async (reaction, user) => {
     await member.roles.add(gamerRole);
   }
 
-  if (reaction.emoji.name === "🎵" && musicRole) {
+  if (reaction.emoji.name === "😈" && musicRole) {
     await member.roles.add(musicRole);
   }
 
-  if (reaction.emoji.name === "💻" && devRole) {
+  if (reaction.emoji.name === "⚡" && devRole) {
     await member.roles.add(devRole);
   }
 });
@@ -425,6 +425,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
