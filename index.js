@@ -14,6 +14,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers
   ]
@@ -115,6 +116,25 @@ if (command === "setupverify") {
     embeds: [embed],
     components: [row]
   });
+
+  message.delete();
+}
+
+  if (command === "setuproles") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("No permission.");
+
+  const msg = await message.channel.send(
+    "🎮 **React to get roles!**\n\n" +
+    "🔥 = Gamer\n" +
+    "🎵 = Music\n" +
+    "💻 = Developer"
+  );
+
+  await msg.react("🔥");
+  await msg.react("🎵");
+  await msg.react("💻");
 
   message.delete();
 }
@@ -359,7 +379,52 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 });
 
+client.on("messageReactionAdd", async (reaction, user) => {
+  if (user.bot) return;
+
+  const member = await reaction.message.guild.members.fetch(user.id);
+
+  const gamerRole = reaction.message.guild.roles.cache.find(r => r.name === "Gamer");
+  const musicRole = reaction.message.guild.roles.cache.find(r => r.name === "Music");
+  const devRole = reaction.message.guild.roles.cache.find(r => r.name === "Developer");
+
+  if (reaction.emoji.name === "🔥" && gamerRole) {
+    await member.roles.add(gamerRole);
+  }
+
+  if (reaction.emoji.name === "🎵" && musicRole) {
+    await member.roles.add(musicRole);
+  }
+
+  if (reaction.emoji.name === "💻" && devRole) {
+    await member.roles.add(devRole);
+  }
+});
+
+client.on("messageReactionRemove", async (reaction, user) => {
+  if (user.bot) return;
+
+  const member = await reaction.message.guild.members.fetch(user.id);
+
+  const gamerRole = reaction.message.guild.roles.cache.find(r => r.name === "ʙᴀɴᴋᴀɪ🔥");
+  const musicRole = reaction.message.guild.roles.cache.find(r => r.name === "sʜᴀʀɪɴɢᴀɴ😈");
+  const devRole = reaction.message.guild.roles.cache.find(r => r.name === "ʜᴀᴋɪ⚡");
+
+  if (reaction.emoji.name === "🔥" && gamerRole) {
+    await member.roles.remove(gamerRole);
+  }
+
+  if (reaction.emoji.name === "😈" && musicRole) {
+    await member.roles.remove(musicRole);
+  }
+
+  if (reaction.emoji.name === "⚡" && devRole) {
+    await member.roles.remove(devRole);
+  }
+});
+
 client.login(process.env.TOKEN);
+
 
 
 
