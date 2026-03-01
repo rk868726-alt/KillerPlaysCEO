@@ -211,17 +211,6 @@ try {
     inputType: stream.type,
     inlineVolume: true
   });
-
-  player.play(resource);
-  connection.subscribe(player);
-
-  message.channel.send(`🎶 Now Playing: **${search[0].title}**`);
-
-} catch (err) {
-  console.error("MUSIC ERROR:", err);
-  message.reply("Music error.");
-}
-}
     player.play(resource);
     connection.subscribe(player);
 
@@ -231,7 +220,6 @@ try {
     console.log(err);
     message.reply("❌ Error playing song.");
   }
-}
 
   if (command === "pause") {
   player.pause();
@@ -609,6 +597,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
