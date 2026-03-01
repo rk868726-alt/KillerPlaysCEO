@@ -385,9 +385,9 @@ client.on("messageReactionAdd", async (reaction, user) => {
 
   const member = await reaction.message.guild.members.fetch(user.id);
 
-  const gamerRole = reaction.message.guild.roles.cache.find(r => r.name === "Gamer");
-  const musicRole = reaction.message.guild.roles.cache.find(r => r.name === "Music");
-  const devRole = reaction.message.guild.roles.cache.find(r => r.name === "Developer");
+  const gamerRole = reaction.message.guild.roles.cache.find(r => r.name === "ʙᴀɴᴋᴀɪ🔥");
+  const musicRole = reaction.message.guild.roles.cache.find(r => r.name === "sʜᴀʀɪɴɢᴀɴ😈");
+  const devRole = reaction.message.guild.roles.cache.find(r => r.name === "ʜᴀᴋɪ⚡");
 
   if (reaction.emoji.name === "🔥" && gamerRole) {
     await member.roles.add(gamerRole);
@@ -425,6 +425,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
