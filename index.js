@@ -63,40 +63,37 @@ client.on('messageCreate', async (message) => {
   const command = args.shift().toLowerCase();
 
 // ✅ SETUP VERIFY PANEL
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isButton()) return;
+if (command === "setupverify") {
 
-  if (interaction.customId === "verify_button") {
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("❌ You need Administrator permission.");
 
-    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊");
-    const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
-    const logChannel = interaction.guild.channels.cache.find(
-      ch => ch.name === "乄│ᴠᴇʀɪғɪᴇᴅ"
-    );
+  const embed = new EmbedBuilder()
+    .setColor("#2ecc71") // Green
+    .setTitle("✅ Server Verification")
+    .setDescription(
+      `Welcome to **${message.guild.name}**!\n\n` +
+      `To access the server, you need to verify yourself.\n` +
+      `Click the button below to get verified.`
+    )
+    .setThumbnail(message.guild.iconURL({ dynamic: true }))
+    .setFooter({ text: `${message.guild.name} • Verification` })
+    .setTimestamp();
 
-    if (!verifiedRole)
-      return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
+  const button = new ButtonBuilder()
+    .setCustomId("verify_button")
+    .setLabel("Verify")
+    .setStyle(ButtonStyle.Success);
 
-    await interaction.member.roles.add(verifiedRole);
+  const row = new ActionRowBuilder().addComponents(button);
 
-    if (unverifiedRole) {
-      await interaction.member.roles.remove(unverifiedRole);
-    }
+  await message.channel.send({
+    embeds: [embed],
+    components: [row]
+  });
 
-    // Reply to user privately
-    await interaction.reply({
-      content: "🎉 You are now verified!",
-      ephemeral: true
-    });
-
-    // Send log message in another channel
-    if (logChannel) {
-      logChannel.send(
-        `✅ ${interaction.user.tag} has been verified successfully.`
-      );
-    }
-  }
-});
+  message.delete();
+}
 
     // 🧹 Clear messages
  // 🧹 CLEAR
@@ -258,8 +255,11 @@ client.on(Events.InteractionCreate, async interaction => {
 
   if (interaction.customId === "verify_button") {
 
-    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊");
+    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
     const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
+    const logChannel = interaction.guild.channels.cache.find(
+      ch => ch.name === "verification-logs"
+    );
 
     if (!verifiedRole)
       return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
@@ -270,14 +270,23 @@ client.on(Events.InteractionCreate, async interaction => {
       await interaction.member.roles.remove(unverifiedRole);
     }
 
+    // Reply to user privately
     await interaction.reply({
       content: "🎉 You are now verified!",
       ephemeral: true
     });
+
+    // Send log message in another channel
+    if (logChannel) {
+      logChannel.send(
+        `✅ ${interaction.user.tag} has been verified successfully.`
+      );
+    }
   }
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
