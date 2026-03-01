@@ -255,13 +255,13 @@ client.on(Events.InteractionCreate, async interaction => {
 
   if (interaction.customId === "verify_button") {
 
-    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
+    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊");
     const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
 
     if (!verifiedRole)
       return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
 
-    await interaction.member.roles.add(verifiedRole);
+    await interaction.member.roles.add(𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊);
 
     if (unverifiedRole) {
       await interaction.member.roles.remove(unverifiedRole);
@@ -275,6 +275,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
