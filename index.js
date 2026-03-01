@@ -48,6 +48,53 @@ client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
+// ================= WELCOME MESSAGE =================
+client.on("guildMemberAdd", async (member) => {
+
+  const welcomeChannel = member.guild.channels.cache.find(
+    ch => ch.name === "—͟͞͞⌬』│ᴡᴇʟᴄᴏᴍᴇ" // 🔹 change channel name if needed
+  );
+
+  if (!welcomeChannel) return;
+
+  const embed = new EmbedBuilder()
+    .setColor("#00ff99")
+    .setTitle("🎉 Welcome to the Server!")
+    .setDescription(
+      `Hey ${member}, welcome to **${member.guild.name}**!\n\n` +
+      `✨ Please read the rules\n` +
+      `🔥 Have fun and enjoy your stay!`
+    )
+    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setFooter({ text: `Member #${member.guild.memberCount}` })
+    .setTimestamp();
+
+  welcomeChannel.send({ embeds: [embed] });
+});
+
+// ================= GOODBYE MESSAGE =================
+client.on("guildMemberRemove", async (member) => {
+
+  const goodbyeChannel = member.guild.channels.cache.find(
+    ch => ch.name === "—͟͞͞⌬』│ɢᴏᴏᴅʙʏᴇ" // 🔹 change channel name if needed
+  );
+
+  if (!goodbyeChannel) return;
+
+  const embed = new EmbedBuilder()
+    .setColor("#ff4d4d")
+    .setTitle("😢 Member Left")
+    .setDescription(
+      `👋 **${member.user.tag}** has left the server.\n\n` +
+      `We now have ${member.guild.memberCount} members.`
+    )
+    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setTimestamp();
+
+  goodbyeChannel.send({ embeds: [embed] });
+});
+
+
 // ================= MESSAGE EVENT =================
 client.on('messageCreate', async (message) => {
 
@@ -458,6 +505,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
