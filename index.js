@@ -1,3 +1,13 @@
+const { 
+  joinVoiceChannel, 
+  createAudioPlayer, 
+  createAudioResource, 
+  AudioPlayerStatus,
+  getVoiceConnection 
+} = require('@discordjs/voice');
+
+const play = require("play-dl");
+
 const OpenAI = require("openai");
 
 const openai = new OpenAI({
@@ -25,6 +35,9 @@ const client = new Client({
   ],
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
+
+// 🎵 MUSIC PLAYER (PUT IT HERE)
+let player = createAudioPlayer();
 
 // ===== DATABASE =====
 const DB_FILE = './database.json';
@@ -167,6 +180,56 @@ if (db.autoresponder) {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
+
+  if (command === "play") {
+
+  const voiceChannel = message.member.voice.channel;
+  if (!voiceChannel) return message.reply("❌ Join a voice channel first.");
+
+  const query = args.join(" ");
+  if (!query) return message.reply("❌ Provide a song name or YouTube link.");
+
+  const connection = joinVoiceChannel({
+    channelId: voiceChannel.id,
+    guildId: message.guild.id,
+    adapterCreator: message.guild.voiceAdapterCreator
+  });
+
+  try {
+    const yt = await play.search(query, { limit: 1 });
+    const stream = await play.stream(yt[0].url);
+
+    const resource = createAudioResource(stream.stream, {
+      inputType: stream.type
+    });
+
+    player.play(resource);
+    connection.subscribe(player);
+
+    message.channel.send(`🎶 Now Playing: **${yt[0].title}**`);
+
+  } catch (err) {
+    console.log(err);
+    message.reply("❌ Error playing song.");
+  }
+}
+
+  if (command === "pause") {
+  player.pause();
+  message.channel.send("⏸ Paused.");
+}
+
+  if (command === "resume") {
+  player.unpause();
+  message.channel.send("▶ Resumed.");
+}
+
+  if (command === "skip") {
+  player.stop();
+  message.channel.send("⏭ Skipped.");
+}
+
+  
 
 // ✅ SETUP VERIFY PANEL
 if (command === "setupverify") {
@@ -527,6 +590,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
