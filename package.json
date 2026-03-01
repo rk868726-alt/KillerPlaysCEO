@@ -12,6 +12,8 @@
   "type": "commonjs",
   "dependencies": {
     "discord.js": "^14.25.1",
-    "fs": "^0.0.1-security"
+    "dotenv": "^17.3.1",
+    "fs": "^0.0.1-security",
+    "openai": "^6.25.0"
   }
 }
