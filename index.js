@@ -1,3 +1,4 @@
+const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
   joinVoiceChannel, 
@@ -182,28 +183,44 @@ if (db.autoresponder) {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "play") {
+  let query = args.join(" ");
+if (!query) return message.reply("Provide a song name or link.");
 
-  const voiceChannel = message.member.voice.channel;
-  if (!voiceChannel) return message.reply("❌ Join a voice channel first.");
+try {
 
-  const query = args.join(" ");
-  if (!query) return message.reply("❌ Provide a song name or YouTube link.");
+  // 🎵 If Spotify link
+  if (query.includes("spotify.com")) {
 
-  const connection = joinVoiceChannel({
-    channelId: voiceChannel.id,
-    guildId: message.guild.id,
-    adapterCreator: message.guild.voiceAdapterCreator
+    const data = await getData(query);
+
+    if (data.type === "track") {
+      query = `${data.name} ${data.artists[0].name}`;
+    } else {
+      return message.reply("Only Spotify track links supported.");
+    }
+  }
+
+  const search = await play.search(query, { limit: 1 });
+  if (!search.length) return message.reply("No results found.");
+
+  const stream = await play.stream(search[0].url, {
+    discordPlayerCompatibility: true
   });
 
-  try {
-    const yt = await play.search(query, { limit: 1 });
-    const stream = await play.stream(yt[0].url);
+  const resource = createAudioResource(stream.stream, {
+    inputType: stream.type,
+    inlineVolume: true
+  });
 
-    const resource = createAudioResource(stream.stream, {
-  inputType: stream.type,
-  inlineVolume: true
-});
+  player.play(resource);
+  connection.subscribe(player);
+
+  message.channel.send(`🎶 Now Playing: **${search[0].title}**`);
+
+} catch (err) {
+  console.error("MUSIC ERROR:", err);
+  message.reply("Music error.");
+}
 
     player.play(resource);
     connection.subscribe(player);
@@ -592,6 +609,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
