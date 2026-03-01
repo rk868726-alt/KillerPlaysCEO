@@ -128,14 +128,14 @@ if (command === "setupverify") {
 
   const msg = await message.channel.send(
     "🎮 **React to get roles!**\n\n" +
-    "🔥 = Gamer\n" +
-    "🎵 = Music\n" +
-    "💻 = Developer"
+    "🔥 = ʙᴀɴᴋᴀɪ🔥\n" +
+    "😈 = sʜᴀʀɪɴɢᴀɴ😈\n" +
+    "⚡ = ʜᴀᴋɪ⚡"
   );
 
   await msg.react("🔥");
-  await msg.react("🎵");
-  await msg.react("💻");
+  await msg.react("😈");
+  await msg.react("⚡");
 
   message.delete();
 }
@@ -425,6 +425,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
