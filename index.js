@@ -63,37 +63,40 @@ client.on('messageCreate', async (message) => {
   const command = args.shift().toLowerCase();
 
 // ✅ SETUP VERIFY PANEL
-if (command === "setupverify") {
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isButton()) return;
 
-  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
-    return message.reply("❌ You need Administrator permission.");
+  if (interaction.customId === "verify_button") {
 
-  const embed = new EmbedBuilder()
-    .setColor("#2ecc71") // Green
-    .setTitle("✅ Server Verification")
-    .setDescription(
-      `Welcome to **${message.guild.name}**!\n\n` +
-      `To access the server, you need to verify yourself.\n` +
-      `Click the button below to get verified.`
-    )
-    .setThumbnail(message.guild.iconURL({ dynamic: true }))
-    .setFooter({ text: `${message.guild.name} • Verification` })
-    .setTimestamp();
+    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
+    const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
+    const logChannel = interaction.guild.channels.cache.find(
+      ch => ch.name === "verification-logs"
+    );
 
-  const button = new ButtonBuilder()
-    .setCustomId("verify_button")
-    .setLabel("Verify")
-    .setStyle(ButtonStyle.Success);
+    if (!verifiedRole)
+      return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
 
-  const row = new ActionRowBuilder().addComponents(button);
+    await interaction.member.roles.add(verifiedRole);
 
-  await message.channel.send({
-    embeds: [embed],
-    components: [row]
-  });
+    if (unverifiedRole) {
+      await interaction.member.roles.remove(unverifiedRole);
+    }
 
-  message.delete();
-}
+    // Reply to user privately
+    await interaction.reply({
+      content: "🎉 You are now verified!",
+      ephemeral: true
+    });
+
+    // Send log message in another channel
+    if (logChannel) {
+      logChannel.send(
+        `✅ ${interaction.user.tag} has been verified successfully.`
+      );
+    }
+  }
+});
 
     // 🧹 Clear messages
  // 🧹 CLEAR
@@ -275,6 +278,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
