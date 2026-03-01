@@ -261,7 +261,7 @@ client.on(Events.InteractionCreate, async interaction => {
     if (!verifiedRole)
       return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
 
-    await interaction.member.roles.add(𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊);
+    await interaction.member.roles.add(verifiedRole);
 
     if (unverifiedRole) {
       await interaction.member.roles.remove(unverifiedRole);
@@ -275,6 +275,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
