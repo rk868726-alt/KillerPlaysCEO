@@ -315,6 +315,28 @@ if (command === "mention") {
   return message.channel.send(`${member}`);
 }
 
+  // 📊 SERVER INFO
+if (command === "serverinfo") {
+
+  const { guild } = message;
+
+  const embed = new EmbedBuilder()
+    .setColor("#3498db")
+    .setTitle(`📊 ${guild.name} Server Info`)
+    .setThumbnail(guild.iconURL({ dynamic: true }))
+    .addFields(
+      { name: "👑 Owner", value: `<@${guild.ownerId}>`, inline: true },
+      { name: "👥 Members", value: `${guild.memberCount}`, inline: true },
+      { name: "📅 Created On", value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`, inline: false },
+      { name: "📂 Channels", value: `${guild.channels.cache.size}`, inline: true },
+      { name: "🎭 Roles", value: `${guild.roles.cache.size}`, inline: true }
+    )
+    .setFooter({ text: `Server ID: ${guild.id}` })
+    .setTimestamp();
+
+  message.channel.send({ embeds: [embed] });
+}
+  
   // ⚠ WARN
   if (command === "warn") {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers))
@@ -505,6 +527,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
