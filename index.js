@@ -76,10 +76,6 @@ if (message.mentions.has(client.user)) {
 // ===== AUTO MODERATION =====
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
-
-  client.on('messageCreate', async (message) => {
-  if (message.author.bot || !message.guild) return;
-
   // ===== AI CHAT (PASTE HERE) =====
   if (message.mentions.has(client.user)) {
     try {
@@ -490,6 +486,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
