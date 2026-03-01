@@ -5,6 +5,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  EmbedBuilder,
   Events
 } = require('discord.js');
 const fs = require('fs');
@@ -61,20 +62,33 @@ client.on('messageCreate', async (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  // ✅ SETUP VERIFICATION PANEL
+// ✅ SETUP VERIFY PANEL
 if (command === "setupverify") {
+
   if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
-    return message.reply("No permission.");
+    return message.reply("❌ You need Administrator permission.");
+
+  const embed = new EmbedBuilder()
+    .setColor("#2ecc71") // Green
+    .setTitle("✅ Server Verification")
+    .setDescription(
+      `Welcome to **${message.guild.name}**!\n\n` +
+      `To access the server, you need to verify yourself.\n` +
+      `Click the button below to get verified.`
+    )
+    .setThumbnail(message.guild.iconURL({ dynamic: true }))
+    .setFooter({ text: `${message.guild.name} • Verification` })
+    .setTimestamp();
 
   const button = new ButtonBuilder()
-    .setCustomId('verify_button')
-    .setLabel('✅ Verify')
+    .setCustomId("verify_button")
+    .setLabel("Verify")
     .setStyle(ButtonStyle.Success);
 
   const row = new ActionRowBuilder().addComponents(button);
 
   await message.channel.send({
-    content: "Click the button below to verify yourself.",
+    embeds: [embed],
     components: [row]
   });
 
@@ -239,13 +253,13 @@ if (command === "mention") {
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isButton()) return;
 
-  if (interaction.customId === 'verify_button') {
+  if (interaction.customId === "verify_button") {
 
     const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
     const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
 
     if (!verifiedRole)
-      return interaction.reply({ content: "Verified role not found.", ephemeral: true });
+      return interaction.reply({ content: "❌ Verified role not found.", ephemeral: true });
 
     await interaction.member.roles.add(verifiedRole);
 
@@ -261,6 +275,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
