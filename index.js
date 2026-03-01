@@ -49,58 +49,34 @@ client.once('ready', () => {
 });
 
 // ===== AI CHAT (Mention Based) =====
-client.on('messageCreate', async (message) => {
+// 🤖 AI CHAT
 if (message.mentions.has(client.user)) {
 
   try {
-    const userMessage = message.content.replace(`<@${client.user.id}>`, "").trim();
+    const userMessage = message.content
+      .replace(`<@${client.user.id}>`, "")
+      .trim();
 
     if (!userMessage) return;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a friendly Discord server AI bot." },
+        { role: "system", content: "You are a friendly Discord bot." },
         { role: "user", content: userMessage }
       ],
       max_tokens: 200
     });
 
-    message.reply(response.choices[0].message.content);
+    await message.reply(response.choices[0].message.content);
 
   } catch (error) {
     console.error(error);
-    message.reply("⚠️ AI is currently unavailable.");
+    message.reply("⚠️ AI is unavailable.");
   }
+
+  return;
 }
-
-// ===== AUTO MODERATION =====
-client.on('messageCreate', async (message) => {
-  if (message.author.bot || !message.guild) return;
-  // ===== AI CHAT (PASTE HERE) =====
-  if (message.mentions.has(client.user)) {
-    try {
-      const userMessage = message.content
-        .replace(`<@${client.user.id}>`, "")
-        .trim();
-
-      if (!userMessage) return;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a friendly Discord bot." },
-          { role: "user", content: userMessage }
-        ],
-      });
-
-      await message.reply(response.choices[0].message.content);
-
-    } catch (error) {
-      console.error(error);
-      message.reply("AI error.");
-    }
-  }
 
   // ===== YOUR PREFIX COMMANDS BELOW =====
   const prefix = "!";
@@ -487,6 +463,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
