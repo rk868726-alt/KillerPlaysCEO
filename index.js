@@ -48,36 +48,6 @@ client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-// ===== AI CHAT (Mention Based) =====
-// 🤖 AI CHAT
-if (message.mentions.has(client.user)) {
-
-  try {
-    const userMessage = message.content
-      .replace(`<@${client.user.id}>`, "")
-      .trim();
-
-    if (!userMessage) return;
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "You are a friendly Discord bot." },
-        { role: "user", content: userMessage }
-      ],
-      max_tokens: 200
-    });
-
-    await message.reply(response.choices[0].message.content);
-
-  } catch (error) {
-    console.error(error);
-    message.reply("⚠️ AI is unavailable.");
-  }
-
-  return;
-}
-
   // ===== YOUR PREFIX COMMANDS BELOW =====
   const prefix = "!";
   if (!message.content.startsWith(prefix)) return;
@@ -463,6 +433,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
