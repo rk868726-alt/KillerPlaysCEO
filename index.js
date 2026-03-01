@@ -68,10 +68,10 @@ client.on(Events.InteractionCreate, async interaction => {
 
   if (interaction.customId === "verify_button") {
 
-    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "Verified");
+    const verifiedRole = interaction.guild.roles.cache.find(r => r.name === "𝔸𝕊𝕊𝔸𝕊𝕀ℕ𝕊");
     const unverifiedRole = interaction.guild.roles.cache.find(r => r.name === "Unverified");
     const logChannel = interaction.guild.channels.cache.find(
-      ch => ch.name === "verification-logs"
+      ch => ch.name === "乄│ᴠᴇʀɪғɪᴇᴅ"
     );
 
     if (!verifiedRole)
@@ -278,6 +278,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
