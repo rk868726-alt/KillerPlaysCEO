@@ -221,7 +221,7 @@ try {
   console.error("MUSIC ERROR:", err);
   message.reply("Music error.");
 }
-
+}
     player.play(resource);
     connection.subscribe(player);
 
@@ -609,6 +609,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
