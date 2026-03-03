@@ -1,25 +1,3 @@
-
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
-  ]
-});const LEVEL_CHANNEL_FILE = "./levelChannel.json";
-
-if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
-  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
-}
-
-function loadLevelChannel() {
-  return JSON.parse(fs.readFileSync(LEVEL_CHANNEL_FILE));
-}
-
-function saveLevelChannel(data) {
-  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
-}
-
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
@@ -37,6 +15,21 @@ const OpenAI = require("openai");
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
+
+const LEVEL_CHANNEL_FILE = "./levelChannel.json";
+
+if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
+}
+
+function loadLevelChannel() {
+  return JSON.parse(fs.readFileSync(LEVEL_CHANNEL_FILE));
+}
+
+function saveLevelChannel(data) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
+}
+
 const { 
   Client, 
   GatewayIntentBits, 
@@ -722,6 +715,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
