@@ -307,13 +307,13 @@ if (command === "antilink") {
   return message.reply("Usage: !antilink add/remove/list #channel");
 }
  
-  if (command === "setlevelchannel") {
+if (command === "setlevelchannel") {
 
-  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
     return message.reply("Admin only.");
 
   const channel = message.mentions.channels.first();
-  if (!channel) return message.reply("Mention a channel.");
+if (!channel) return message.reply("Mention a channel.");
 
   const data = loadLevelChannel();
   data[message.guild.id] = channel.id;
@@ -321,7 +321,8 @@ if (command === "antilink") {
 
   message.channel.send(`✅ Level-up messages set to ${channel}`);
 }
-  if (command === "rank") {
+  
+if (command === "rank") {
 
   const levels = loadLevels();
 
@@ -713,6 +714,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
