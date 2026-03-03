@@ -16,19 +16,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-const LEVEL_CHANNEL_FILE = "./levelChannel.json";
 
-if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
-  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
-}
-
-function loadLevelChannel() {
-  return JSON.parse(fs.readFileSync(LEVEL_CHANNEL_FILE));
-}
-
-function saveLevelChannel(data) {
-  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
-}
 
 const { 
   Client, 
@@ -52,6 +40,20 @@ const client = new Client({
   ],
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
+
+const LEVEL_CHANNEL_FILE = "./levelChannel.json";
+
+if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
+}
+
+function loadLevelChannel() {
+  return JSON.parse(fs.readFileSync(LEVEL_CHANNEL_FILE));
+}
+
+function saveLevelChannel(data) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
+}
 
 // ===== ANTI LINK CHANNEL STORAGE =====
 const ANTI_LINK_FILE = "./antilink.json";
@@ -715,6 +717,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
