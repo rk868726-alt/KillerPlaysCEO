@@ -38,8 +38,6 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
-// 🎵 MUSIC PLAYER (PUT IT HERE)
-let player = createAudioPlayer();
 
 // ===== DATABASE =====
 const DB_FILE = './database.json';
@@ -115,81 +113,7 @@ client.on('messageCreate', async (message) => {
 
   if (message.author.bot || !message.guild) return;
 
-  const play = require("play-dl");
-const { getData } = require("spotify-url-info");
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require("@discordjs/voice");
-
-client.on("messageCreate", async (message) => {
-
-  if (!message.content.startsWith("!play")) return;
-  if (!message.member.voice.channel)
-    return message.reply("❌ Join a voice channel first!");
-
-  const query = message.content.split(" ").slice(1).join(" ");
-  if (!query) return message.reply("❌ Provide a Spotify playlist link.");
-
-  try {
-
-    const connection = joinVoiceChannel({
-      channelId: message.member.voice.channel.id,
-      guildId: message.guild.id,
-      adapterCreator: message.guild.voiceAdapterCreator,
-    });
-
-    const player = createAudioPlayer();
-    connection.subscribe(player);
-
-    // 🎵 If Spotify Playlist
-    if (query.includes("spotify.com/playlist")) {
-
-      const data = await getData(query);
-
-      if (!data.tracks || !data.tracks.items.length)
-        return message.reply("❌ Could not fetch playlist.");
-
-      const tracks = data.tracks.items.map(item =>
-        `${item.track.name} ${item.track.artists[0].name}`
-      );
-
-      let index = 0;
-
-      const playNext = async () => {
-        if (index >= tracks.length) {
-          message.channel.send("✅ Playlist finished.");
-          return;
-        }
-
-        const search = await play.search(tracks[index], { limit: 1 });
-        if (!search.length) {
-          index++;
-          return playNext();
-        }
-
-        const stream = await play.stream(search[0].url);
-        const resource = createAudioResource(stream.stream, {
-          inputType: stream.type,
-        });
-
-        player.play(resource);
-        message.channel.send(`🎶 Now Playing: **${search[0].title}**`);
-
-        index++;
-      };
-
-      player.on(AudioPlayerStatus.Idle, playNext);
-
-      playNext();
-
-    } else {
-      return message.reply("❌ Only Spotify playlist links supported.");
-    }
-
-  } catch (err) {
-    console.error("SPOTIFY ERROR:", err);
-    message.reply("❌ Error playing playlist.");
-  }
-});
-
+ 
   // ================= AI CHAT =================
   if (message.mentions.has(client.user)) {
     try {
@@ -258,59 +182,7 @@ if (db.autoresponder) {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  let query = args.join(" ");
-if (!query) return message.reply("Provide a song name or link.");
-
-try {
-
-  // 🎵 If Spotify link
-  if (query.includes("spotify.com")) {
-
-    const data = await getData(query);
-
-    if (data.type === "track") {
-      query = `${data.name} ${data.artists[0].name}`;
-    } else {
-      return message.reply("Only Spotify track links supported.");
-    }
-  }
-
-  const search = await play.search(query, { limit: 1 });
-  if (!search.length) return message.reply("No results found.");
-
-  const stream = await play.stream(search[0].url, {
-    discordPlayerCompatibility: true
-  });
-
-  const resource = createAudioResource(stream.stream, {
-    inputType: stream.type,
-    inlineVolume: true
-  });
-    player.play(resource);
-    connection.subscribe(player);
-
-    message.channel.send(`🎶 Now Playing: **${yt[0].title}**`);
-
-  } catch (err) {
-    console.log(err);
-    message.reply("❌ Error playing song.");
-  }
-
-  if (command === "pause") {
-  player.pause();
-  message.channel.send("⏸ Paused.");
-}
-
-  if (command === "resume") {
-  player.unpause();
-  message.channel.send("▶ Resumed.");
-}
-
-  if (command === "skip") {
-  player.stop();
-  message.channel.send("⏭ Skipped.");
-}
-
+ 
   
 
 // ✅ SETUP VERIFY PANEL
@@ -672,6 +544,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
