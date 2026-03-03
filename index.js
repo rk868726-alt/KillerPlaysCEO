@@ -1,3 +1,17 @@
+const LEVEL_CHANNEL_FILE = "./levelChannel.json";
+
+if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
+}
+
+function loadLevelChannel() {
+  return JSON.parse(fs.readFileSync(LEVEL_CHANNEL_FILE));
+}
+
+function saveLevelChannel(data) {
+  fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
+}
+
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
@@ -51,6 +65,21 @@ function loadAntiLink() {
 
 function saveAntiLink(data) {
   fs.writeFileSync(ANTI_LINK_FILE, JSON.stringify(data, null, 2));
+}
+
+// ===== LEVEL SYSTEM =====
+const LEVEL_FILE = "./levels.json";
+
+if (!fs.existsSync(LEVEL_FILE)) {
+  fs.writeFileSync(LEVEL_FILE, JSON.stringify({}));
+}
+
+function loadLevels() {
+  return JSON.parse(fs.readFileSync(LEVEL_FILE));
+}
+
+function saveLevels(data) {
+  fs.writeFileSync(LEVEL_FILE, JSON.stringify(data, null, 2));
 }
 
 // ===== DATABASE =====
@@ -127,7 +156,44 @@ client.on('messageCreate', async (message) => {
 
   if (message.author.bot || !message.guild) return;
 
- 
+if (message.author.bot || !message.guild) return;
+
+// ===== XP GAIN =====
+const levels = loadLevels();
+const levelChannelData = loadLevelChannel();
+
+if (!levels[message.guild.id]) levels[message.guild.id] = {};
+if (!levels[message.guild.id][message.author.id]) {
+  levels[message.guild.id][message.author.id] = {
+    xp: 0,
+    level: 1
+  };
+}
+
+const user = levels[message.guild.id][message.author.id];
+
+// Random XP (5–15)
+const xpGain = Math.floor(Math.random() * 11) + 5;
+user.xp += xpGain;
+
+// Level formula
+const xpNeeded = user.level * 100;
+
+if (user.xp >= xpNeeded) {
+  user.level++;
+  user.xp = 0;
+
+  const levelChannelId = levelChannelData[message.guild.id];
+  if (levelChannelId) {
+    const channel = message.guild.channels.cache.get(levelChannelId);
+    if (channel) {
+      channel.send(`🎉 ${message.author} leveled up to **Level ${user.level}**!`);
+    }
+  }
+}
+
+saveLevels(levels);
+  
   // ================= AI CHAT =================
   if (message.mentions.has(client.user)) {
     try {
@@ -241,7 +307,52 @@ if (command === "antilink") {
   return message.reply("Usage: !antilink add/remove/list #channel");
 }
  
-  
+  if (command === "setlevelchannel") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("Admin only.");
+
+  const channel = message.mentions.channels.first();
+  if (!channel) return message.reply("Mention a channel.");
+
+  const data = loadLevelChannel();
+  data[message.guild.id] = channel.id;
+  saveLevelChannel(data);
+
+  message.channel.send(`✅ Level-up messages set to ${channel}`);
+}
+  if (command === "rank") {
+
+  const levels = loadLevels();
+
+  if (!levels[message.guild.id] ||
+      !levels[message.guild.id][message.author.id])
+    return message.reply("No XP yet.");
+
+  const user = levels[message.guild.id][message.author.id];
+
+  message.channel.send(
+    `🏆 ${message.author.username}\nLevel: ${user.level}\nXP: ${user.xp}`
+  );
+}
+  if (command === "leaderboard") {
+
+  const levels = loadLevels();
+  if (!levels[message.guild.id])
+    return message.reply("No data yet.");
+
+  const sorted = Object.entries(levels[message.guild.id])
+    .sort((a, b) => b[1].level - a[1].level)
+    .slice(0, 10);
+
+  let leaderboard = sorted
+    .map((user, index) =>
+      `${index + 1}. <@${user[0]}> - Level ${user[1].level}`
+    )
+    .join("\n");
+
+  message.channel.send(`🏆 **Leaderboard**\n\n${leaderboard}`);
+}
 
 // ✅ SETUP VERIFY PANEL
 if (command === "setupverify") {
@@ -602,6 +713,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
