@@ -55,6 +55,9 @@ function saveLevelChannel(data) {
   fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify(data, null, 2));
 }
 
+// ===== SNIPE SYSTEM =====
+const snipes = new Map();
+
 // ===== ANTI LINK CHANNEL STORAGE =====
 const ANTI_LINK_FILE = "./antilink.json";
 
@@ -566,6 +569,29 @@ if (command === "serverinfo") {
     }
   }
 
+  if (command === "snipe") {
+
+  const snipe = snipes.get(message.channel.id);
+
+  if (!snipe)
+    return message.reply("❌ Nothing to snipe!");
+
+  const { EmbedBuilder } = require("discord.js");
+
+  const embed = new EmbedBuilder()
+    .setColor("Red")
+    .setAuthor({
+      name: snipe.author.tag,
+      iconURL: snipe.author.displayAvatarURL()
+    })
+    .setDescription(snipe.content || "*No text content*")
+    .setFooter({
+      text: `Deleted at ${new Date(snipe.createdAt).toLocaleString()}`
+    });
+
+  message.channel.send({ embeds: [embed] });
+}
+
   // 🔇 MUTE
   if (command === "mute") {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles))
@@ -716,7 +742,18 @@ client.on("messageReactionRemove", async (reaction, user) => {
   }
 });
 
+client.on("messageDelete", (message) => {
+  if (!message.guild || message.author?.bot) return;
+
+  snipes.set(message.channel.id, {
+    content: message.content,
+    author: message.author,
+    createdAt: message.createdAt
+  });
+});
+
 client.login(process.env.TOKEN);
+
 
 
 
