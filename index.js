@@ -142,7 +142,6 @@ client.on('messageCreate', async (message) => {
     return;
   }
   // ===== ANTI LINK SYSTEM =====
-const db = loadDB();
 
 if (!db.antilink) db.antilink = {};
 
@@ -611,6 +610,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
