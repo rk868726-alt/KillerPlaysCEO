@@ -1,4 +1,3 @@
-const fs = require('fs'); // MUST be before using fs
 
 const client = new Client({
   intents: [
@@ -723,6 +722,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
