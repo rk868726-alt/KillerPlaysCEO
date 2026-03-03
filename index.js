@@ -1,4 +1,3 @@
-const {PermissionsBitField } = require('discord.js');
 const fs = require('fs'); // MUST be before using fs
 
 const client = new Client({
@@ -724,6 +723,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
