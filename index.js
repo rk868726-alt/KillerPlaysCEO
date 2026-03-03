@@ -38,6 +38,20 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
+// ===== ANTI LINK CHANNEL STORAGE =====
+const ANTI_LINK_FILE = "./antilink.json";
+
+if (!fs.existsSync(ANTI_LINK_FILE)) {
+  fs.writeFileSync(ANTI_LINK_FILE, JSON.stringify([]));
+}
+
+function loadAntiLink() {
+  return JSON.parse(fs.readFileSync(ANTI_LINK_FILE));
+}
+
+function saveAntiLink(data) {
+  fs.writeFileSync(ANTI_LINK_FILE, JSON.stringify(data, null, 2));
+}
 
 // ===== DATABASE =====
 const DB_FILE = './database.json';
@@ -141,22 +155,16 @@ client.on('messageCreate', async (message) => {
 
     return;
   }
-  // ===== ANTI LINK SYSTEM =====
-
-if (!db.antilink) db.antilink = {};
+  // ===== SMART ANTI LINK =====
+const antiLinkChannels = loadAntiLink();
 
 if (
-  db.antilink[message.guild.id] &&
-  db.antilink[message.guild.id].includes(message.channel.id)
+  antiLinkChannels.includes(message.channel.id) &&
+  /(https?:\/\/[^\s]+)/g.test(message.content)
 ) {
-  if (
-    message.content.includes("http://") ||
-    message.content.includes("https://")
-  ) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      await message.delete();
-      message.channel.send(`🚫 ${message.author}, links are not allowed here.`);
-    }
+  if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+    await message.delete();
+    return message.channel.send(`${message.author}, 🚫 Links are not allowed here.`);
   }
 }
   // 🚫 Bad Words Filter
@@ -194,60 +202,44 @@ if (db.autoresponder) {
 
 
   // ===== ANTI LINK COMMAND =====
+// ===== ANTI LINK SETUP =====
 if (command === "antilink") {
 
   if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
-    return message.reply("❌ Administrator only.");
+    return message.reply("❌ Admin only command.");
 
-  const sub = args[0];
+  const action = args[0];
+  const channel = message.mentions.channels.first();
 
-  const db = loadDB();
-  if (!db.antilink) db.antilink = {};
-  if (!db.antilink[message.guild.id])
-    db.antilink[message.guild.id] = [];
+  let data = loadAntiLink();
 
-  if (sub === "add") {
-    const channel = message.mentions.channels.first();
+  if (action === "add") {
+    if (!channel) return message.reply("Mention a channel.");
+    if (data.includes(channel.id))
+      return message.reply("Channel already protected.");
+
+    data.push(channel.id);
+    saveAntiLink(data);
+    return message.channel.send(`✅ Anti-link enabled in ${channel}`);
+  }
+
+  if (action === "remove") {
     if (!channel) return message.reply("Mention a channel.");
 
-    if (db.antilink[message.guild.id].includes(channel.id))
-      return message.reply("Channel already added.");
-
-    db.antilink[message.guild.id].push(channel.id);
-    saveDB(db);
-
-    message.channel.send(`✅ Anti-link enabled in ${channel}.`);
+    data = data.filter(id => id !== channel.id);
+    saveAntiLink(data);
+    return message.channel.send(`❌ Anti-link removed from ${channel}`);
   }
 
-  else if (sub === "remove") {
-    const channel = message.mentions.channels.first();
-    if (!channel) return message.reply("Mention a channel.");
+  if (action === "list") {
+    if (!data.length) return message.reply("No channels configured.");
 
-    db.antilink[message.guild.id] =
-      db.antilink[message.guild.id].filter(id => id !== channel.id);
-
-    saveDB(db);
-
-    message.channel.send(`❌ Anti-link removed from ${channel}.`);
+    const channels = data.map(id => `<#${id}>`).join(", ");
+    return message.channel.send(`🚫 Anti-link enabled in: ${channels}`);
   }
 
-  else if (sub === "list") {
-    const channels = db.antilink[message.guild.id]
-      .map(id => `<#${id}>`)
-      .join(", ");
-
-    message.channel.send(
-      channels.length
-        ? `📌 Anti-link channels: ${channels}`
-        : "No channels set."
-    );
-  }
-
-  else {
-    message.reply("Usage:\n!antilink add #channel\n!antilink remove #channel\n!antilink list");
-  }
+  return message.reply("Usage: !antilink add/remove/list #channel");
 }
-
  
   
 
@@ -610,6 +602,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
