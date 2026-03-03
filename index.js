@@ -1,5 +1,14 @@
-const fs = require('fs');
-const LEVEL_CHANNEL_FILE = "./levelChannel.json";
+const { Client, GatewayIntentBits, PermissionsBitField } = require('discord.js');
+const fs = require('fs'); // MUST be before using fs
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers
+  ]
+});const LEVEL_CHANNEL_FILE = "./levelChannel.json";
 
 if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
   fs.writeFileSync(LEVEL_CHANNEL_FILE, JSON.stringify({}));
@@ -715,6 +724,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
