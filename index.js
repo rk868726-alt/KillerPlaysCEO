@@ -1,3 +1,4 @@
+const fs = require('fs');
 const LEVEL_CHANNEL_FILE = "./levelChannel.json";
 
 if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
@@ -714,6 +715,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
