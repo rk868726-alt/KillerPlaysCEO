@@ -141,14 +141,25 @@ client.on('messageCreate', async (message) => {
 
     return;
   }
-  // 🚫 Anti-Link
-  if (message.content.includes("http://") || message.content.includes("https://")) {
+  // ===== ANTI LINK SYSTEM =====
+const db = loadDB();
+
+if (!db.antilink) db.antilink = {};
+
+if (
+  db.antilink[message.guild.id] &&
+  db.antilink[message.guild.id].includes(message.channel.id)
+) {
+  if (
+    message.content.includes("http://") ||
+    message.content.includes("https://")
+  ) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       await message.delete();
-      return message.channel.send(`${message.author}, links are not allowed.`);
+      message.channel.send(`🚫 ${message.author}, links are not allowed here.`);
     }
   }
-
+}
   // 🚫 Bad Words Filter
   const bannedWords = ["badword1", "badword2"];
   if (bannedWords.some(word => message.content.toLowerCase().includes(word))) {
@@ -181,6 +192,62 @@ if (db.autoresponder) {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
+
+
+  // ===== ANTI LINK COMMAND =====
+if (command === "antilink") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("❌ Administrator only.");
+
+  const sub = args[0];
+
+  const db = loadDB();
+  if (!db.antilink) db.antilink = {};
+  if (!db.antilink[message.guild.id])
+    db.antilink[message.guild.id] = [];
+
+  if (sub === "add") {
+    const channel = message.mentions.channels.first();
+    if (!channel) return message.reply("Mention a channel.");
+
+    if (db.antilink[message.guild.id].includes(channel.id))
+      return message.reply("Channel already added.");
+
+    db.antilink[message.guild.id].push(channel.id);
+    saveDB(db);
+
+    message.channel.send(`✅ Anti-link enabled in ${channel}.`);
+  }
+
+  else if (sub === "remove") {
+    const channel = message.mentions.channels.first();
+    if (!channel) return message.reply("Mention a channel.");
+
+    db.antilink[message.guild.id] =
+      db.antilink[message.guild.id].filter(id => id !== channel.id);
+
+    saveDB(db);
+
+    message.channel.send(`❌ Anti-link removed from ${channel}.`);
+  }
+
+  else if (sub === "list") {
+    const channels = db.antilink[message.guild.id]
+      .map(id => `<#${id}>`)
+      .join(", ");
+
+    message.channel.send(
+      channels.length
+        ? `📌 Anti-link channels: ${channels}`
+        : "No channels set."
+    );
+  }
+
+  else {
+    message.reply("Usage:\n!antilink add #channel\n!antilink remove #channel\n!antilink list");
+  }
+}
 
  
   
@@ -544,6 +611,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
