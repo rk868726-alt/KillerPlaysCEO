@@ -146,6 +146,33 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
+// ===== ECONOMY SYSTEM =====
+const ECONOMY_FILE = "./economy.json";
+
+if (!fs.existsSync(ECONOMY_FILE)) {
+  fs.writeFileSync(ECONOMY_FILE, JSON.stringify({}));
+}
+
+function loadEconomy() {
+  return JSON.parse(fs.readFileSync(ECONOMY_FILE));
+}
+
+function saveEconomy(data) {
+  fs.writeFileSync(ECONOMY_FILE, JSON.stringify(data, null, 2));
+}
+
+function getUserData(guildId, userId) {
+  const data = loadEconomy();
+
+  if (!data[guildId]) data[guildId] = {};
+  if (!data[guildId][userId]) {
+    data[guildId][userId] = { points: 0 };
+  }
+
+  saveEconomy(data);
+  return data;
+}
+
 // ===== MIRROR SYSTEM =====
 const MIRROR_FILE = "./mirror.json";
 
@@ -765,6 +792,77 @@ if (command === "say") {
   }, 3000);
 }
 
+  if (command === "guess") {
+
+  const number = Math.floor(Math.random() * 5) + 1;
+  const guess = parseInt(args[0]);
+
+  if (!guess || guess < 1 || guess > 5)
+    return message.reply("Guess a number between 1-5.");
+
+  const data = getUserData(message.guild.id, message.author.id);
+
+  if (guess === number) {
+    data[message.guild.id][message.author.id].points += 10;
+    saveEconomy(data);
+    return message.reply("🎉 Correct! You earned 10 points.");
+  } else {
+    return message.reply(`❌ Wrong! The number was ${number}.`);
+  }
+}
+
+  if (command === "balance") {
+
+  const data = getUserData(message.guild.id, message.author.id);
+  const points = data[message.guild.id][message.author.id].points;
+
+  message.reply(`💰 You have ${points} points.`);
+}
+
+  if (command === "shop") {
+
+  message.channel.send(`
+🛒 **Role Shop**
+
+🥉 ᴍᴀᴅᴀʀᴀ - 50 points
+🥈 ᴀɪᴢᴇɴ - 100 points
+🥇 ᴊᴏʏʙᴏʏ - 200 points
+
+Use !redeem <role name>
+`);
+}
+
+  if (command === "redeem") {
+
+  const roleName = args.join(" ");
+  if (!roleName) return message.reply("Provide role name.");
+
+  const role = message.guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+  if (!role) return message.reply("Role not found.");
+
+  const prices = {
+    "ᴍᴀᴅᴀʀᴀ": 50,
+    "ᴀɪᴢᴇɴ": 100,
+    "ᴊᴏʏʙᴏʏ": 200
+  };
+
+  const price = prices[roleName.toLowerCase()];
+  if (!price) return message.reply("Role not purchasable.");
+
+  const data = getUserData(message.guild.id, message.author.id);
+  const user = data[message.guild.id][message.author.id];
+
+  if (user.points < price)
+    return message.reply("❌ Not enough points.");
+
+  user.points -= price;
+  saveEconomy(data);
+
+  await message.member.roles.add(role);
+
+  message.reply(`✅ You redeemed ${role.name} role!`);
+}
+
   // 📢 MENTION
 if (command === "mention") {
   const member = message.mentions.members.first();
@@ -1135,6 +1233,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
