@@ -296,19 +296,18 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.customId === "create_ticket") {
 
+    await interaction.deferReply({ ephemeral: true });
+
     const existing = interaction.guild.channels.cache.find(
       c => c.name === `ticket-${interaction.user.id}`
     );
 
     if (existing)
-      return interaction.reply({
-        content: "❌ You already have an open ticket.",
-        ephemeral: true
-      });
+      return interaction.editReply("❌ You already have an open ticket.");
 
     const channel = await interaction.guild.channels.create({
       name: `ticket-${interaction.user.username}`,
-      type: ChannelType.GuildText,
+      type: 0,
       permissionOverwrites: [
         {
           id: interaction.guild.roles.everyone.id,
@@ -321,34 +320,22 @@ client.on("interactionCreate", async (interaction) => {
       ]
     });
 
-    // Support Role (CHANGE NAME IF NEEDED)
-    const supportRole = interaction.guild.roles.cache.find(r => r.name === "YONKO☠️");
+    const supportRole = interaction.guild.roles.cache.find(r => r.name === "Support Team");
 
     if (supportRole) {
       await channel.permissionOverwrites.edit(supportRole, {
         ViewChannel: true,
-        SendMessages: true,
-        ReadMessageHistory: true
+        SendMessages: true
       });
 
       channel.send(`${supportRole} 🔔 New ticket created!`);
     }
 
-    channel.send({
-      embeds: [{
-        color: 0x00AEFF,
-        title: "Support Ticket",
-        description: `Hello ${interaction.user}, please describe your issue.\n\nUse !close to close this ticket.`
-      }]
-    });
+    channel.send(`Hello ${interaction.user}, please describe your issue.`);
 
-    interaction.reply({
-      content: `✅ Ticket created: ${channel}`,
-      ephemeral: true
-    });
+    interaction.editReply(`✅ Ticket created: ${channel}`);
   }
 });
-
 // ================= MESSAGE EVENT =================
 client.on('messageCreate', async (message) => {
 
@@ -1145,6 +1132,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
