@@ -290,6 +290,8 @@ client.on("guildMemberRemove", async (member) => {
   goodbyeChannel.send({ embeds: [embed] });
 });
 
+//TICKET SUPPORT
+
 client.on("interactionCreate", async (interaction) => {
 
   if (!interaction.isButton()) return;
@@ -320,7 +322,7 @@ client.on("interactionCreate", async (interaction) => {
       ]
     });
 
-    const supportRole = interaction.guild.roles.cache.find(r => r.name === "Support Team");
+    const supportRole = interaction.guild.roles.cache.find(r => r.name === "YONKO☠️");
 
     if (supportRole) {
       await channel.permissionOverwrites.edit(supportRole, {
@@ -332,6 +334,7 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     channel.send(`Hello ${interaction.user}, please describe your issue.`);
+    //channel.send(``);
 
     interaction.editReply(`✅ Ticket created: ${channel}`);
   }
@@ -1132,6 +1135,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
