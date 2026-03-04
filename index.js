@@ -290,51 +290,7 @@ client.on("guildMemberRemove", async (member) => {
   goodbyeChannel.send({ embeds: [embed] });
 });
 
-
-// ================= MESSAGE EVENT =================
-client.on('messageCreate', async (message) => {
-
-  if (message.author.bot || !message.guild) return;
-
-if (message.author.bot || !message.guild) return;
-
-// ===== XP GAIN =====
-const levels = loadLevels();
-const levelChannelData = loadLevelChannel();
-
-if (!levels[message.guild.id]) levels[message.guild.id] = {};
-if (!levels[message.guild.id][message.author.id]) {
-  levels[message.guild.id][message.author.id] = {
-    xp: 0,
-    level: 1
-  };
-}
-
-const user = levels[message.guild.id][message.author.id];
-
-// Random XP (5–15)
-const xpGain = Math.floor(Math.random() * 11) + 5;
-user.xp += xpGain;
-
-// Level formula
-const xpNeeded = user.level * 100;
-
-if (user.xp >= xpNeeded) {
-  user.level++;
-  user.xp = 0;
-
-  const levelChannelId = levelChannelData[message.guild.id];
-  if (levelChannelId) {
-    const channel = message.guild.channels.cache.get(levelChannelId);
-    if (channel) {
-      channel.send(`🎉 ${message.author} leveled up to **Level ${user.level}**!`);
-    }
-  }
-}
-
-saveLevels(levels);
-
-  client.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", async (interaction) => {
 
   if (!interaction.isButton()) return;
 
@@ -392,6 +348,51 @@ saveLevels(levels);
     });
   }
 });
+
+// ================= MESSAGE EVENT =================
+client.on('messageCreate', async (message) => {
+
+  if (message.author.bot || !message.guild) return;
+
+if (message.author.bot || !message.guild) return;
+
+// ===== XP GAIN =====
+const levels = loadLevels();
+const levelChannelData = loadLevelChannel();
+
+if (!levels[message.guild.id]) levels[message.guild.id] = {};
+if (!levels[message.guild.id][message.author.id]) {
+  levels[message.guild.id][message.author.id] = {
+    xp: 0,
+    level: 1
+  };
+}
+
+const user = levels[message.guild.id][message.author.id];
+
+// Random XP (5–15)
+const xpGain = Math.floor(Math.random() * 11) + 5;
+user.xp += xpGain;
+
+// Level formula
+const xpNeeded = user.level * 100;
+
+if (user.xp >= xpNeeded) {
+  user.level++;
+  user.xp = 0;
+
+  const levelChannelId = levelChannelData[message.guild.id];
+  if (levelChannelId) {
+    const channel = message.guild.channels.cache.get(levelChannelId);
+    if (channel) {
+      channel.send(`🎉 ${message.author} leveled up to **Level ${user.level}**!`);
+    }
+  }
+}
+
+saveLevels(levels);
+
+  
 
   // ===== MIRROR MESSAGE =====
 const mirrorData = loadMirror();
@@ -1144,6 +1145,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
