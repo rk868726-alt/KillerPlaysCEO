@@ -688,6 +688,34 @@ if (command === "mention") {
   return message.channel.send(`${member}`);
 }
 
+// ===== LOCK CHANNEL =====
+if (command === "lock") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("❌ Admin only.");
+
+  await message.channel.permissionOverwrites.edit(
+    message.guild.roles.everyone,
+    { SendMessages: false }
+  );
+
+  message.channel.send("🔒 Channel locked. Only admins can send messages.");
+}
+
+  // ===== UNLOCK CHANNEL =====
+if (command === "unlock") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("❌ Admin only.");
+
+  await message.channel.permissionOverwrites.edit(
+    message.guild.roles.everyone,
+    { SendMessages: null }
+  );
+
+  message.channel.send("🔓 Channel unlocked.");
+}
+  
   // 📊 SERVER INFO
 if (command === "serverinfo") {
 
@@ -1022,6 +1050,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
