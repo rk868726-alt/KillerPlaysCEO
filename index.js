@@ -232,15 +232,15 @@ if (
 
       const { EmbedBuilder } = require("discord.js");
 
-      const embed = new EmbedBuilder()
-        .setColor("Blue")
-        .setAuthor({
-          name: message.author.tag,
-          iconURL: message.author.displayAvatarURL()
-        })
-        .setDescription(message.content || "*No text content*")
-        .setFooter({ text: `From #${message.channel.name}` })
-        .setTimestamp();
+    //  const embed = new EmbedBuilder()
+      //  .setColor("Blue")
+       // .setAuthor({
+         // name: message.author.tag,
+          //iconURL: message.author.displayAvatarURL()
+     //   })
+       // .setDescription(message.content || "*No text content*")
+        //.setFooter({ text: `From #${message.channel.name}` })
+      //  .setTimestamp();
 
       targetChannel.send({ embeds: [embed] });
     }
@@ -826,6 +826,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
