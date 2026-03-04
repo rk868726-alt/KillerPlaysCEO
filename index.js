@@ -41,6 +41,21 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
+// ===== MIRROR SYSTEM =====
+const MIRROR_FILE = "./mirror.json";
+
+if (!fs.existsSync(MIRROR_FILE)) {
+  fs.writeFileSync(MIRROR_FILE, JSON.stringify({}));
+}
+
+function loadMirror() {
+  return JSON.parse(fs.readFileSync(MIRROR_FILE));
+}
+
+function saveMirror(data) {
+  fs.writeFileSync(MIRROR_FILE, JSON.stringify(data, null, 2));
+}
+
 const LEVEL_CHANNEL_FILE = "./levelChannel.json";
 
 if (!fs.existsSync(LEVEL_CHANNEL_FILE)) {
@@ -199,6 +214,38 @@ if (user.xp >= xpNeeded) {
 }
 
 saveLevels(levels);
+
+  // ===== MIRROR MESSAGE =====
+const mirrorData = loadMirror();
+
+if (
+  mirrorData[message.guild.id] &&
+  mirrorData[message.guild.id].length
+) {
+  const pairs = mirrorData[message.guild.id];
+
+  for (let pair of pairs) {
+    if (message.channel.id === pair.source) {
+
+      const targetChannel = message.guild.channels.cache.get(pair.target);
+      if (!targetChannel) return;
+
+      const { EmbedBuilder } = require("discord.js");
+
+      const embed = new EmbedBuilder()
+        .setColor("Blue")
+        .setAuthor({
+          name: message.author.tag,
+          iconURL: message.author.displayAvatarURL()
+        })
+        .setDescription(message.content || "*No text content*")
+        .setFooter({ text: `From #${message.channel.name}` })
+        .setTimestamp();
+
+      targetChannel.send({ embeds: [embed] });
+    }
+  }
+}
   
   // ================= AI CHAT =================
   if (message.mentions.has(client.user)) {
@@ -529,6 +576,32 @@ if (command === "serverinfo") {
 
   message.channel.send({ embeds: [embed] });
 }
+
+
+  if (command === "setmirror") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("Admin only.");
+
+  const source = message.mentions.channels.first();
+  const target = message.mentions.channels.last();
+
+  if (!source || !target)
+    return message.reply("Usage: !setmirror #source #target");
+
+  const data = loadMirror();
+
+  if (!data[message.guild.id]) data[message.guild.id] = [];
+
+  data[message.guild.id].push({
+    source: source.id,
+    target: target.id
+  });
+
+  saveMirror(data);
+
+  message.channel.send(`✅ Mirroring ${source} → ${target}`);
+}
   
   // ⚠ WARN
   if (command === "warn") {
@@ -753,6 +826,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
