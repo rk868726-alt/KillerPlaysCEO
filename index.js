@@ -130,7 +130,8 @@ const {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  Events
+  Events,
+  channelType
 } = require('discord.js');
 const fs = require('fs');
 
@@ -333,6 +334,65 @@ if (user.xp >= xpNeeded) {
 
 saveLevels(levels);
 
+  client.on("interactionCreate", async (interaction) => {
+
+  if (!interaction.isButton()) return;
+
+  if (interaction.customId === "create_ticket") {
+
+    const existing = interaction.guild.channels.cache.find(
+      c => c.name === `ticket-${interaction.user.id}`
+    );
+
+    if (existing)
+      return interaction.reply({
+        content: "❌ You already have an open ticket.",
+        ephemeral: true
+      });
+
+    const channel = await interaction.guild.channels.create({
+      name: `ticket-${interaction.user.username}`,
+      type: ChannelType.GuildText,
+      permissionOverwrites: [
+        {
+          id: interaction.guild.roles.everyone.id,
+          deny: ["ViewChannel"]
+        },
+        {
+          id: interaction.user.id,
+          allow: ["ViewChannel", "SendMessages", "ReadMessageHistory"]
+        }
+      ]
+    });
+
+    // Support Role (CHANGE NAME IF NEEDED)
+    const supportRole = interaction.guild.roles.cache.find(r => r.name === "Support Team");
+
+    if (supportRole) {
+      await channel.permissionOverwrites.edit(supportRole, {
+        ViewChannel: true,
+        SendMessages: true,
+        ReadMessageHistory: true
+      });
+
+      channel.send(`${supportRole} 🔔 New ticket created!`);
+    }
+
+    channel.send({
+      embeds: [{
+        color: 0x00AEFF,
+        title: "Support Ticket",
+        description: `Hello ${interaction.user}, please describe your issue.\n\nUse !close to close this ticket.`
+      }]
+    });
+
+    interaction.reply({
+      content: `✅ Ticket created: ${channel}`,
+      ephemeral: true
+    });
+  }
+});
+
   // ===== MIRROR MESSAGE =====
 const mirrorData = loadMirror();
 
@@ -526,6 +586,29 @@ if (command === "rank") {
   message.channel.send(`🏆 **Leaderboard**\n\n${leaderboard}`);
 }
 
+  // ===== SET TICKET PANEL =====
+if (command === "setticket") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("Admin only.");
+
+  const button = new ButtonBuilder()
+    .setCustomId("create_ticket")
+    .setLabel("🎫 Create Ticket")
+    .setStyle(ButtonStyle.Primary);
+
+  const row = new ActionRowBuilder().addComponents(button);
+
+  message.channel.send({
+    embeds: [{
+      color: 0x00AEFF,
+      title: "Support System",
+      description: "Click the button below to create a support ticket."
+    }],
+    components: [row]
+  });
+}
+
 // ✅ SETUP VERIFY PANEL
 if (command === "setupverify") {
 
@@ -679,6 +762,17 @@ if (command === "say") {
   await message.delete();
   return message.channel.send(text);
   }
+
+  if (command === "close") {
+
+  if (!message.channel.name.startsWith("ticket-"))
+    return message.reply("This is not a ticket channel.");
+
+  await message.channel.send("🔒 Closing ticket...");
+  setTimeout(() => {
+    message.channel.delete();
+  }, 3000);
+}
 
   // 📢 MENTION
 if (command === "mention") {
@@ -1050,6 +1144,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
