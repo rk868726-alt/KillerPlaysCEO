@@ -1,17 +1,4 @@
-const axios = require("axios");
-const YT_FILE = "./youtube.json";
 
-if (!fs.existsSync(YT_FILE)) {
-  fs.writeFileSync(YT_FILE, JSON.stringify({}));
-}
-
-function loadYT() {
-  return JSON.parse(fs.readFileSync(YT_FILE));
-}
-
-function saveYT(data) {
-  fs.writeFileSync(YT_FILE, JSON.stringify(data, null, 2));
-}
 
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
@@ -160,6 +147,21 @@ const client = new Client({
   ],
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
+
+const axios = require("axios");
+const YT_FILE = "./youtube.json";
+
+if (!fs.existsSync(YT_FILE)) {
+  fs.writeFileSync(YT_FILE, JSON.stringify({}));
+}
+
+function loadYT() {
+  return JSON.parse(fs.readFileSync(YT_FILE));
+}
+
+function saveYT(data) {
+  fs.writeFileSync(YT_FILE, JSON.stringify(data, null, 2));
+}
 
 // ===== ECONOMY SYSTEM =====
 const ECONOMY_FILE = "./economy.json";
@@ -1315,6 +1317,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
