@@ -1,6 +1,4 @@
 const axios = require("axios");
-const cron = require("node-cron");
-
 const YT_FILE = "./youtube.json";
 
 if (!fs.existsSync(YT_FILE)) {
@@ -1317,6 +1315,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
