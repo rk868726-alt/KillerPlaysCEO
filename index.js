@@ -1,3 +1,20 @@
+const axios = require("axios");
+const cron = require("node-cron");
+
+const YT_FILE = "./youtube.json";
+
+if (!fs.existsSync(YT_FILE)) {
+  fs.writeFileSync(YT_FILE, JSON.stringify({}));
+}
+
+function loadYT() {
+  return JSON.parse(fs.readFileSync(YT_FILE));
+}
+
+function saveYT(data) {
+  fs.writeFileSync(YT_FILE, JSON.stringify(data, null, 2));
+}
+
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
@@ -768,6 +785,27 @@ if (command === "clear") {
 
   message.reply(`❌ Auto response removed for: ${trigger}`);
 }
+
+
+  if (command === "setyt") {
+
+  if (message.author.id !== "YOUR_USER_ID")
+    return message.reply("❌ Only bot owner can set YouTube channel.");
+
+  const ytChannelId = args[0];
+  if (!ytChannelId)
+    return message.reply("Provide YouTube channel ID.");
+
+  const data = loadYT();
+
+  data.channelId = ytChannelId;
+  data.discordChannel = message.channel.id;
+  data.lastVideo = null;
+
+  saveYT(data);
+
+  message.reply("✅ YouTube channel set successfully.");
+}
   
   // 🔊 SAY
 if (command === "say") {
@@ -1233,6 +1271,53 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
+cron.schedule("*/5 * * * *", async () => {
+
+  const data = loadYT();
+  if (!data.channelId) return;
+
+  try {
+    const res = await axios.get(
+      `https://www.googleapis.com/youtube/v3/search`,
+      {
+        params: {
+          key: process.env.YOUTUBE_API_KEY,
+          channelId: data.channelId,
+          part: "snippet",
+          order: "date",
+          maxResults: 1
+        }
+      }
+    );
+
+    const video = res.data.items[0];
+    if (!video) return;
+
+    const videoId = video.id.videoId;
+    if (!videoId) return;
+
+    if (data.lastVideo === videoId) return;
+
+    data.lastVideo = videoId;
+    saveYT(data);
+
+    const channel = await client.channels.fetch(data.discordChannel);
+
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+
+    if (video.snippet.liveBroadcastContent === "live") {
+      channel.send(`🔴 LIVE NOW!\n${video.snippet.title}\n${url}`);
+    } else {
+      channel.send(`📢 New Video Uploaded!\n${video.snippet.title}\n${url}`);
+    }
+
+  } catch (err) {
+    console.log("YT ERROR:", err.message);
+  }
+
+});
+
 
 
 
