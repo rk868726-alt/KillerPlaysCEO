@@ -15,6 +15,5 @@
     "openai": "^6.25.0",
     "play-dl": "^1.9.7",
     "spotify-url-info": "^3.2.18",
-    "node-cron": "^3.0.3"
-  }
+    "node-cron": "^4.2.1"  }
 }
