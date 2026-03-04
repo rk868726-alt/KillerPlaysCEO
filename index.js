@@ -602,6 +602,31 @@ if (command === "serverinfo") {
 
   message.channel.send(`✅ Mirroring ${source} → ${target}`);
 }
+
+  if (command === "removemirror") {
+
+  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
+    return message.reply("Admin only.");
+
+  const source = message.mentions.channels.first();
+  const target = message.mentions.channels.last();
+
+  if (!source || !target)
+    return message.reply("Usage: !removemirror #source #target");
+
+  const data = loadMirror();
+
+  if (!data[message.guild.id])
+    return message.reply("No mirror data found.");
+
+  data[message.guild.id] = data[message.guild.id].filter(pair =>
+    !(pair.source === source.id && pair.target === target.id)
+  );
+
+  saveMirror(data);
+
+  message.channel.send(`❌ Mirror removed: ${source} → ${target}`);
+}
   
   // ⚠ WARN
   if (command === "warn") {
@@ -826,6 +851,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
