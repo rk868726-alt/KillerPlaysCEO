@@ -366,7 +366,7 @@ saveLevels(levels);
     });
 
     // Support Role (CHANGE NAME IF NEEDED)
-    const supportRole = interaction.guild.roles.cache.find(r => r.name === "Support Team");
+    const supportRole = interaction.guild.roles.cache.find(r => r.name === "YONKO☠️");
 
     if (supportRole) {
       await channel.permissionOverwrites.edit(supportRole, {
@@ -1144,6 +1144,7 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
+
 
 
 
