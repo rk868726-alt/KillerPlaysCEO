@@ -19,5 +19,8 @@
     "openai": "^6.25.0",
     "play-dl": "^1.9.7",
     "spotify-url-info": "^3.2.18"
+    "dependencies": {
+  "node-cron": "^3.x.x"
+}
   }
 }
