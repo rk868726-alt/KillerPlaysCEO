@@ -153,10 +153,10 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "killerplaysceo-production.up.railway.app",
+      host: "caboose.proxy.rlwy.net:13351",
       port: 443,
       password: "youshallnotpass",
-      secure: true
+      secure: false
     }
   ],
   send(id, payload) {
@@ -1425,6 +1425,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
