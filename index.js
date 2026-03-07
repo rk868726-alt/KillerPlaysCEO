@@ -301,10 +301,12 @@ function saveDaily(data) {
 }
 
 // ===== READY =====
-client.once('ready', () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.tag}`);
+  manager.init(client.user.id);
 });
 
+client.on("raw", (d) => manager.updateVoiceState(d));
 // ================= WELCOME MESSAGE =================
 client.on("guildMemberAdd", async (member) => {
 
@@ -351,11 +353,6 @@ client.on("guildMemberRemove", async (member) => {
   goodbyeChannel.send({ embeds: [embed] });
 });
 
-client.once("ready", () => {
-  console.log(`Logged in as ${client.user.tag}`);
-  manager.init(client.user.id);
-});
-client.on("raw", (d) => manager.updateVoiceState(d));
 
 //TICKET SUPPORT
 
@@ -1383,6 +1380,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
