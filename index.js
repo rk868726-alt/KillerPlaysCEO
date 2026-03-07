@@ -1,11 +1,4 @@
-const { 
-joinVoiceChannel,
-createAudioPlayer,
-createAudioResource,
-AudioPlayerStatus
-} = require("@discordjs/voice");
 
-const play = require("play-dl");
 
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
@@ -1368,6 +1361,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
