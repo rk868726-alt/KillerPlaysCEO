@@ -312,16 +312,7 @@ client.once("clientReady", () => {
 });
 client.on("raw", (d) => manager.updateVoiceState(d));
 
-manager.on("trackStart", (player, track) => {
-  const channel = client.channels.cache.get(player.textChannel);
-  if (channel) channel.send(`🎶 Now playing: **${track.title}**`);
-});
 
-manager.on("queueEnd", player => {
-  const channel = client.channels.cache.get(player.textChannel);
-  if (channel) channel.send("✅ Queue finished.");
-  player.destroy();
-});
 // ================= WELCOME MESSAGE =================
 client.on("guildMemberAdd", async (member) => {
 
@@ -1432,6 +1423,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
