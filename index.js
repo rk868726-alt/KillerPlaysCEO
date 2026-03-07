@@ -9,7 +9,7 @@ const {
   AudioPlayerStatus,
   getVoiceConnection 
 } = require('@discordjs/voice');
-
+const { Manager } = require("erela.js");
 const play = require("play-dl");
 
 const OpenAI = require("openai");
@@ -748,39 +748,7 @@ if (command === "setupverify") {
 
   message.channel.send(`✅ Daily quotes will be sent in ${channel}`);
 }
-//play
-
-  if (command === "play") {
-
-  const vc = message.member.voice.channel;
-  if (!vc) return message.reply("Join a voice channel first.");
-
-  const query = args.join(" ");
-  if (!query) return message.reply("Provide a song name.");
-
-  const player = manager.create({
-    guild: message.guild.id,
-    voiceChannel: vc.id,
-    textChannel: message.channel.id,
-  });
-
-  player.connect();
-
-  const res = await manager.search(query, message.author);
-
-  if (res.tracks.length === 0)
-    return message.reply("No results found.");
-
-  player.queue.add(res.tracks[0]);
-
-  if (!player.playing && !player.paused && !player.queue.size) {
-    player.play();
-  }
-
-  message.channel.send(`🎵 Added **${res.tracks[0].title}** to queue.`);
-}
-
-
+  
   
     // 🧹 Clear messages
  // 🧹 CLEAR
@@ -924,10 +892,16 @@ if (command === "play") {
     player.play();
 }
   //stop
-const player = manager.players.get(message.guild.id);
-if (!player) return message.reply("Nothing is playing.");
+if (command === "stop") {
 
-player.stop();
+  const player = manager.players.get(message.guild.id);
+
+  if (!player)
+    return message.reply("Nothing is playing.");
+
+  player.stop();
+  message.channel.send("⏹ Music stopped.");
+}
   //leave vc
 if (command === "leave") {
 
