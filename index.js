@@ -1,4 +1,11 @@
+const { 
+joinVoiceChannel,
+createAudioPlayer,
+createAudioResource,
+AudioPlayerStatus
+} = require("@discordjs/voice");
 
+const play = require("play-dl");
 
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
@@ -17,6 +24,8 @@ const OpenAI = require("openai");
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
+
+const player = createAudioPlayer();
 
 // ===== DAILY QUOTES =====
 const quotes = [
@@ -806,6 +815,48 @@ if (command === "clear") {
 
   message.reply("✅ YouTube channel set successfully.");
 }
+
+//play 
+  if (command === "play") {
+
+  const query = args.join(" ");
+  if (!query) return message.reply("Provide a YouTube link or search.");
+
+  const voiceChannel = message.member.voice.channel;
+  if (!voiceChannel) return message.reply("Join a voice channel first.");
+
+  const connection = joinVoiceChannel({
+    channelId: voiceChannel.id,
+    guildId: message.guild.id,
+    adapterCreator: message.guild.voiceAdapterCreator
+  });
+
+  let stream = await play.stream(query);
+
+  const resource = createAudioResource(stream.stream, {
+    inputType: stream.type
+  });
+
+  player.play(resource);
+  connection.subscribe(player);
+
+  message.channel.send("🎵 Playing music...");
+}
+  //stop
+  if (command === "stop") {
+
+  player.stop();
+  message.channel.send("⏹ Music stopped.");
+}
+  //leave vc
+
+  if (command === "leave") {
+
+  const voiceChannel = message.member.voice.channel;
+  if (!voiceChannel) return;
+
+  voiceChannel.leave();
+}
   
   // 🔊 SAY
 if (command === "say") {
@@ -1317,6 +1368,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
