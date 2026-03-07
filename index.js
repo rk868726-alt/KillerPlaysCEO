@@ -153,25 +153,31 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "killerplaysceo-production.up.railway.app",
-      port: 80,
-      password: "youshallnotpass",
-      secure: true
+            host: "lava.pub", // public Lavalink node
+            port: 443,
+            password: "youshallnotpass",
+            secure: true
     }
   ],
   send(id, payload) {
-    const guild = client.guilds.cache.get(id);
-    if (guild) guild.shard.send(payload);
+        const guild = client.guilds.cache.get(id);
+        if (guild) guild.shard.send(payload);
   }
 });
 
-manager.on("nodeConnect", node => {
- console.log("✅ Lavalink connected");
+manager.on("nodeConnect", node => console.log(`Lavalink Node "${node.options.identifier}" connected.`));
+manager.on("nodeError", (node, error) => console.log(`Node "${node.options.identifier}" error: ${error.message}`));
+manager.on("trackStart", (player, track) => {
+    const channel = client.channels.cache.get(player.textChannel);
+    if (channel) channel.send(`🎶 Now playing: **${track.title}**`);
 });
 
-manager.on("nodeError", (node, error) => {
- console.log("❌ Lavalink error:", error);
+manager.on("queueEnd", player => {
+    const channel = client.channels.cache.get(player.textChannel);
+    if (channel) channel.send("Queue finished. Leaving voice channel.");
+    player.destroy();
 });
+
 const axios = require("axios");
 const YT_FILE = "./youtube.json";
 
@@ -457,42 +463,33 @@ saveLevels(levels);
 
   //play
 
-  module.exports = {
-  data: {
-    name: "play",
-    description: "Play music"
-  },
+ if (cmd === "play") {
+        if (!args[0]) return message.reply("Please provide a song name or URL.");
+        let voiceChannel = message.member.voice.channel;
+        if (!voiceChannel) return message.reply("Join a voice channel first.");
 
-  async execute(interaction) {
+        let search = args.join(" ");
+        let newPlayer = player || manager.create({
+            guild: message.guild.id,
+            voiceChannel: voiceChannel.id,
+            textChannel: message.channel.id,
+            selfDeafen: true,
+        });
 
-    const query = interaction.options.getString("song");
-    const vc = interaction.member.voice.channel;
+        let res = await manager.search(search, message.author);
+        if (res.tracks.length === 0) return message.reply("No results found.");
 
-    if (!vc)
-      return interaction.reply("Join a voice channel first.");
+        newPlayer.queue.add(res.tracks[0]);
+        if (!newPlayer.playing && !newPlayer.paused) newPlayer.play();
+        message.reply(`🎵 Added **${res.tracks[0].title}** to the queue.`);
+    }
 
-    const player = manager.create({
-      guild: interaction.guild.id,
-      voiceChannel: vc.id,
-      textChannel: interaction.channel.id
-    });
-
-    player.connect();
-
-    const res = await manager.search(query, interaction.user);
-
-    if (!res.tracks.length)
-      return interaction.reply("No results found.");
-
-    player.queue.add(res.tracks[0]);
-
-    if (!player.playing)
-      player.play();
-
-    interaction.reply(`🎵 Playing **${res.tracks[0].title}**`);
-  }
-};
-
+    if (cmd === "stop") {
+        if (!player) return message.reply("Nothing is playing.");
+        player.destroy();
+        message.reply("Stopped playback and left the voice channel.");
+    }
+});
 
  
 
@@ -894,17 +891,7 @@ if (command === "clear") {
 }
 
   
-  //stop
-if (command === "stop") {
 
-  const player = manager.players.get(message.guild.id);
-
-  if (!player)
-    return message.reply("Nothing is playing.");
-
-  player.stop();
-  message.channel.send("⏹ Music stopped.");
-}
   //leave vc
 if (command === "leave") {
 
@@ -1379,7 +1366,6 @@ client.on("messageDelete", (message) => {
 });
 
 client.login(process.env.TOKEN);
-
 cron.schedule("*/5 * * * *", async () => {
 
   const data = loadYT();
@@ -1425,6 +1411,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
