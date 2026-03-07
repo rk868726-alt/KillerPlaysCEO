@@ -153,7 +153,6 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-       identifier: "main",
       host: "killerplaysceo-production.up.railway.app",
       port: 443,
       password: "youshallnotpass",
@@ -167,9 +166,12 @@ const manager = new Manager({
 });
 
 manager.on("nodeConnect", node => {
- console.log(`Lavalink node connected: ${node.options.identifier}`);
+ console.log("✅ Lavalink connected");
 });
 
+manager.on("nodeError", (node, error) => {
+ console.log("❌ Lavalink error:", error);
+});
 const axios = require("axios");
 const YT_FILE = "./youtube.json";
 
@@ -1423,6 +1425,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
