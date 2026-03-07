@@ -153,7 +153,7 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "nozomi.proxy.rlwy.net",
+      host: "killerplaysceo-production.up.railway.app",
       port: 80,
       password: "youshallnotpass",
       secure: true
@@ -1425,6 +1425,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
