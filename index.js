@@ -318,7 +318,7 @@ function saveDaily(data) {
 }
 
 // ===== READY =====
-client.once("ready", () => {
+client.once("clientready", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
 });
@@ -1414,6 +1414,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
