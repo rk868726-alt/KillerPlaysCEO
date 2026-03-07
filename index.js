@@ -149,10 +149,12 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "lavalink.lexnet.cc",
-      port: 80,
-      password: "lexnet",
-      secure: false
+     
+  host: "localhost",
+  port: 2333,
+  password: "youshallnotpass",
+  secure: false
+
     }
   ],
   send(id, payload) {
@@ -1327,6 +1329,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
