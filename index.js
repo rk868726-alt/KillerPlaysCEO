@@ -154,7 +154,7 @@ const manager = new Manager({
   nodes: [
     {
      host: "killerplaysceo-production.up.railway.app",
-     port: 2333,
+     port: 443,
      password: "youshallnotpass",
      secure: true
     }
@@ -1422,6 +1422,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
