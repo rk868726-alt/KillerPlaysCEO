@@ -153,10 +153,10 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "ballast.proxy.rlwy.net",
-      port: 2333,
+      host: "caboose.proxy.rlwy.net",
+      port: 8080,
       password: "youshallnotpass",
-      secure: false
+      secure: true
     }
   ],
   send(id, payload) {
@@ -1425,6 +1425,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
