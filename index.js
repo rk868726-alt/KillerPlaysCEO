@@ -805,22 +805,6 @@ if (command === "clear") {
 
   message.reply("✅ YouTube channel set successfully.");
 }
-//Join
-
-  if (command === "join") {
- const vc = message.member.voice.channel;
- if (!vc) return message.reply("Join VC first");
-
- const player = manager.create({
-  guild: message.guild.id,
-  voiceChannel: vc.id,
-  textChannel: message.channel.id
- });
-
- player.connect();
- message.reply("Joined VC");
-}
-
   
 
   //leave vc
@@ -1342,6 +1326,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
