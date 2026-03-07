@@ -831,31 +831,31 @@ if (command === "clear") {
 }
 
 //play 
- if (command === "play") {
+if (command === "play") {
 
   const query = args.join(" ");
-  if (!query) return message.reply("Provide a YouTube link or search.");
-
   const voiceChannel = message.member.voice.channel;
+
   if (!voiceChannel) return message.reply("Join a voice channel first.");
 
-  const connection = joinVoiceChannel({
-    channelId: voiceChannel.id,
-    guildId: message.guild.id,
-    adapterCreator: message.guild.voiceAdapterCreator
+  const player = manager.create({
+    guild: message.guild.id,
+    voiceChannel: voiceChannel.id,
+    textChannel: message.channel.id
   });
 
-  const stream = await play.stream(query);
+  player.connect();
 
-  const resource = createAudioResource(stream.stream, {
-    inputType: stream.type,
-    inlineVolume: true
-  });
+  const res = await manager.search(query, message.author);
 
-  player.play(resource);
-  connection.subscribe(player);
+  if (res.tracks.length === 0)
+    return message.reply("No results found.");
 
-  message.channel.send("🎵 Playing...");
+  player.queue.add(res.tracks[0]);
+  message.channel.send(`🎵 Playing **${res.tracks[0].title}**`);
+
+  if (!player.playing && !player.paused)
+    player.play();
 }
   //stop
   if (command === "stop") {
@@ -1383,6 +1383,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
