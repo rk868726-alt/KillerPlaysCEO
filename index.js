@@ -418,6 +418,13 @@ client.on('messageCreate', async(message) => {
 
   if (message.author.bot || !message.guild) return;
 
+  const prefix = "$";
+
+if (!message.content.startsWith(prefix)) return;
+
+const args = message.content.slice(prefix.length).trim().split(/ +/);
+const command = args.shift().toLowerCase();
+
 
 // ===== XP GAIN =====
 const levels = loadLevels();
@@ -457,7 +464,7 @@ saveLevels(levels);
 
   //play
 
- if (cmd === "play") {
+ if (command === "play") {
         if (!args[0]) return message.reply("Please provide a song name or URL.");
         let voiceChannel = message.member.voice.channel;
         if (!voiceChannel) return message.reply("Join a voice channel first.");
@@ -478,12 +485,12 @@ saveLevels(levels);
         message.reply(`🎵 Added **${res.tracks[0].title}** to the queue.`);
     }
 
-    if (cmd === "stop") {
+    if (command === "stop") {
         if (!player) return message.reply("Nothing is playing.");
         player.destroy();
         message.reply("Stopped playback and left the voice channel.");
     }
-});
+
 
  
 
@@ -522,13 +529,7 @@ if (
  
  
   // ===== COMMANDS =====
-  const prefix = "$";
-  if (!message.content.startsWith(prefix)) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const command = args.shift().toLowerCase();
-
-
+ 
   // ===== ANTI LINK COMMAND =====
 // ===== ANTI LINK SETUP =====
 if (command === "antilink") {
@@ -1326,6 +1327,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
