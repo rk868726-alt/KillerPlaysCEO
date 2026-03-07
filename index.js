@@ -15,6 +15,21 @@ const manager = new Manager({
   }
 });
 
+manager.on("nodeConnect", node => {
+  console.log(`Lavalink node connected: ${node.options.identifier}`);
+});
+
+manager.on("trackStart", (player, track) => {
+  const channel = client.channels.cache.get(player.textChannel);
+  if (channel) channel.send(`🎶 Now playing: **${track.title}**`);
+});
+
+manager.on("queueEnd", player => {
+  const channel = client.channels.cache.get(player.textChannel);
+  if (channel) channel.send("✅ Queue finished.");
+  player.destroy();
+});
+
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
@@ -875,19 +890,18 @@ if (command === "play") {
     player.play();
 }
   //stop
-  if (command === "stop") {
+const player = manager.players.get(message.guild.id);
+if (!player) return message.reply("Nothing is playing.");
 
-  player.stop();
-  message.channel.send("⏹ Music stopped.");
-}
+player.stop();
   //leave vc
+if (command === "leave") {
 
-  if (command === "leave") {
+  const player = manager.players.get(message.guild.id);
+  if (!player) return message.reply("Not in a voice channel.");
 
-  const voiceChannel = message.member.voice.channel;
-  if (!voiceChannel) return;
-
-  voiceChannel.leave();
+  player.destroy();
+  message.channel.send("👋 Left voice channel.");
 }
   
   // 🔊 SAY
@@ -1400,6 +1414,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
