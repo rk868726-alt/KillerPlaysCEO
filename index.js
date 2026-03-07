@@ -520,8 +520,7 @@ if (
 }
   
  
-  // ===== SMART ANTI LINK =====
-
+  // ===== SMART ANTI LINK 
 // Make sure your event callback is async
 client.on("messageCreate", async (message) => {
   const antiLinkChannels = loadAntiLink();
@@ -1391,6 +1390,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
