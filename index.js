@@ -810,7 +810,7 @@ if (command === "clear") {
 }
 
 //play 
-  if (command === "play") {
+ if (command === "play") {
 
   const query = args.join(" ");
   if (!query) return message.reply("Provide a YouTube link or search.");
@@ -824,16 +824,17 @@ if (command === "clear") {
     adapterCreator: message.guild.voiceAdapterCreator
   });
 
-  let stream = await play.stream(query);
+  const stream = await play.stream(query);
 
   const resource = createAudioResource(stream.stream, {
-    inputType: stream.type
+    inputType: stream.type,
+    inlineVolume: true
   });
 
   player.play(resource);
   connection.subscribe(player);
 
-  message.channel.send("🎵 Playing music...");
+  message.channel.send("🎵 Playing...");
 }
   //stop
   if (command === "stop") {
@@ -1361,6 +1362,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
