@@ -1,20 +1,5 @@
 const { Manager } = require("erela.js");
 
-const manager = new Manager({
-  nodes: [
-    {
-      host: "lavalink.oops.wtf",
-      port: 443,
-      password: "www.freelavalink.ga",
-      secure: true
-    }
-  ],
-  send(id, payload) {
-    const guild = client.guilds.cache.get(id);
-    if (guild) guild.shard.send(payload);
-  }
-});
-
 manager.on("nodeConnect", node => {
   console.log(`Lavalink node connected: ${node.options.identifier}`);
 });
@@ -180,6 +165,21 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
+const manager = new Manager({
+  nodes: [
+    {
+      host: "lavalink.oops.wtf",
+      port: 443,
+      password: "www.freelavalink.ga",
+      secure: true
+    }
+  ],
+  send(id, payload) {
+    const guild = client.guilds.cache.get(id);
+    if (guild) guild.shard.send(payload);
+  }
+});
+
 const axios = require("axios");
 const YT_FILE = "./youtube.json";
 
@@ -316,11 +316,10 @@ function saveDaily(data) {
 }
 
 // ===== READY =====
-client.once("clientready", () => {
+client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
 });
-
 // ================= WELCOME MESSAGE =================
 client.on("guildMemberAdd", async (member) => {
 
@@ -461,64 +460,7 @@ if (user.xp >= xpNeeded) {
 
 saveLevels(levels);
 
-  //plyy
-
-
-  if (command === "play") {
-
-  const query = args.join(" ");
-  if (!query) return message.reply("Provide song name or YouTube link.");
-
-  const voiceChannel = message.member.voice.channel;
-  if (!voiceChannel) return message.reply("Join a voice channel first.");
-
-  let queue = queues.get(message.guild.id);
-
-  if (!queue) {
-
-    const player = createAudioPlayer();
-
-    const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
-      guildId: message.guild.id,
-      adapterCreator: message.guild.voiceAdapterCreator
-    });
-
-    queue = {
-      connection: connection,
-      player: player,
-      songs: [],
-      loop: false
-    };
-
-    queues.set(message.guild.id, queue);
-    connection.subscribe(player);
-
-    player.on(AudioPlayerStatus.Idle, () => {
-
-      if (!queue.loop) queue.songs.shift();
-
-      playSong(message.guild, queue.songs[0]);
-
-    });
-
-  }
-
-  const results = await play.search(query, { limit: 1 });
-  const song = {
-    title: results[0].title,
-    url: results[0].url
-  };
-
-  queue.songs.push(song);
-
-  message.channel.send(`🎵 Added to queue: **${song.title}**`);
-
-  if (queue.songs.length === 1) {
-    playSong(message.guild, queue.songs[0]);
-  }
-}
-  
+ 
 
   // ===== MIRROR MESSAGE =====
 const mirrorData = loadMirror();
@@ -804,7 +746,40 @@ if (command === "setupverify") {
 
   message.channel.send(`✅ Daily quotes will be sent in ${channel}`);
 }
+//play
 
+  if (command === "play") {
+
+  const vc = message.member.voice.channel;
+  if (!vc) return message.reply("Join a voice channel first.");
+
+  const query = args.join(" ");
+  if (!query) return message.reply("Provide a song name.");
+
+  const player = manager.create({
+    guild: message.guild.id,
+    voiceChannel: vc.id,
+    textChannel: message.channel.id,
+  });
+
+  player.connect();
+
+  const res = await manager.search(query, message.author);
+
+  if (res.tracks.length === 0)
+    return message.reply("No results found.");
+
+  player.queue.add(res.tracks[0]);
+
+  if (!player.playing && !player.paused && !player.queue.size) {
+    player.play();
+  }
+
+  message.channel.send(`🎵 Added **${res.tracks[0].title}** to queue.`);
+}
+
+
+  
     // 🧹 Clear messages
  // 🧹 CLEAR
 if (command === "clear") {
@@ -1472,6 +1447,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
