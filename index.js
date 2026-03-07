@@ -472,12 +472,18 @@ saveLevels(levels);
         if (!voiceChannel) return message.reply("Join a voice channel first.");
 
         let search = args.join(" ");
-        let newPlayer = player || manager.create({
-            guild: message.guild.id,
-            voiceChannel: voiceChannel.id,
-            textChannel: message.channel.id,
-            selfDeafen: true,
-        });
+       let player = manager.players.get(message.guild.id);
+
+if (!player) {
+    player = manager.create({
+        guild: message.guild.id,
+        voiceChannel: message.member.voice.channel.id,
+        textChannel: message.channel.id,
+        selfDeafen: true
+    });
+
+    player.connect();
+}
 
         let res = await manager.search(search, message.author);
         if (res.tracks.length === 0) return message.reply("No results found.");
@@ -1329,6 +1335,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
