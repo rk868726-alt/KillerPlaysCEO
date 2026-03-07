@@ -463,6 +463,63 @@ if (user.xp >= xpNeeded) {
 
 saveLevels(levels);
 
+  //plyy
+
+
+  if (command === "play") {
+
+  const query = args.join(" ");
+  if (!query) return message.reply("Provide song name or YouTube link.");
+
+  const voiceChannel = message.member.voice.channel;
+  if (!voiceChannel) return message.reply("Join a voice channel first.");
+
+  let queue = queues.get(message.guild.id);
+
+  if (!queue) {
+
+    const player = createAudioPlayer();
+
+    const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: message.guild.id,
+      adapterCreator: message.guild.voiceAdapterCreator
+    });
+
+    queue = {
+      connection: connection,
+      player: player,
+      songs: [],
+      loop: false
+    };
+
+    queues.set(message.guild.id, queue);
+    connection.subscribe(player);
+
+    player.on(AudioPlayerStatus.Idle, () => {
+
+      if (!queue.loop) queue.songs.shift();
+
+      playSong(message.guild, queue.songs[0]);
+
+    });
+
+  }
+
+  const results = await play.search(query, { limit: 1 });
+  const song = {
+    title: results[0].title,
+    url: results[0].url
+  };
+
+  queue.songs.push(song);
+
+  message.channel.send(`🎵 Added to queue: **${song.title}**`);
+
+  if (queue.songs.length === 1) {
+    playSong(message.guild, queue.songs[0]);
+  }
+}
   
 
   // ===== MIRROR MESSAGE =====
@@ -1417,6 +1474,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
