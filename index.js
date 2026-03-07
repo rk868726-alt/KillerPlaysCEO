@@ -12,11 +12,7 @@ const {
 const { Manager } = require("erela.js");
 const play = require("play-dl");
 
-const OpenAI = require("openai");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY,
-});
 
 // ===== DAILY QUOTES =====
 const quotes = [
@@ -525,33 +521,7 @@ if (
   }
 }
   
-  // ================= AI CHAT =================
-  if (message.mentions.has(client.user)) {
-    try {
-      const userMessage = message.content
-        .replace(`<@${client.user.id}>`, "")
-        .trim();
-
-      if (!userMessage) return;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a friendly Discord bot." },
-          { role: "user", content: userMessage }
-        ],
-        max_tokens: 200
-      });
-
-      await message.reply(response.choices[0].message.content);
-
-    } catch (error) {
-      console.error(error);
-      await message.reply("⚠️ AI is unavailable.");
-    }
-
-    return;
-  }
+ 
   // ===== SMART ANTI LINK =====
 const antiLinkChannels = loadAntiLink();
 
@@ -1411,6 +1381,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
