@@ -520,55 +520,7 @@ if (
 }
   
  
-  // ===== SMART ANTI LINK 
-// Make sure your event callback is async
-client.on("messageCreate", async (message) => {
-  const antiLinkChannels = loadAntiLink();
-
-  // Ignore bots
-  if (message.author.bot) return;
-
-  if (
-    antiLinkChannels.includes(message.channel.id) &&
-    /(https?:\/\/[^\s]+)/g.test(message.content)
-  ) {
-    // Check if member does NOT have ManageMessages permission
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      try {
-        await message.delete(); // ✅ now allowed
-        message.channel.send(`${message.author}, 🚫 Links are not allowed here.`);
-      } catch (err) {
-        console.error("Failed to delete message:", err);
-      }
-    }
-  }
-});
-  // 🚫 Bad Words Filter
-  const bannedWords = ["badword1", "badword2"];
-  if (bannedWords.some(word => message.content.toLowerCase().includes(word))) {
-    await message.delete();
-    return message.channel.send(`${message.author}, bad language is not allowed.`);
-  }
-
-  // ===== AUTO RESPONDER =====
-// ===== AUTO RESPONDER =====
-const db = loadDB();
-
-if (db.autoresponder) {
-  const trigger = message.content.toLowerCase();
-
-  if (db.autoresponder[trigger]) {
-    const data = db.autoresponder[trigger];
-
-    if (data.text) {
-      message.channel.send(data.text);
-    }
-
-    if (data.gif) {
-      message.channel.send(data.gif);
-    }
-  }
-}
+ 
   // ===== COMMANDS =====
   const prefix = "$";
   if (!message.content.startsWith(prefix)) return;
@@ -1390,6 +1342,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
