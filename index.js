@@ -323,7 +323,6 @@ client.once("clientready", () => {
   manager.init(client.user.id);
 });
 
-client.on("raw", (d) => manager.updateVoiceState(d));
 // ================= WELCOME MESSAGE =================
 client.on("guildMemberAdd", async (member) => {
 
@@ -1369,6 +1368,7 @@ client.on("messageDelete", (message) => {
     createdAt: message.createdAt
   });
 });
+client.on("raw", (d) => manager.updateVoiceState(d));
 
 client.login(process.env.TOKEN);
 
@@ -1417,6 +1417,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
