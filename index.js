@@ -153,10 +153,9 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-      host: "lavalink.oops.wtf",
-      port: 443,
-      password: "www.freelavalink.ga",
-      secure: true
+     host: "killerplaysceo-production.up.railway.app",
+     port: 2333,
+     secure: true
     }
   ],
   send(id, payload) {
@@ -1422,6 +1421,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
