@@ -521,17 +521,30 @@ if (
   
  
   // ===== SMART ANTI LINK =====
-const antiLinkChannels = loadAntiLink();
+const { PermissionsBitField } = require('discord.js');
 
-if (
-  antiLinkChannels.includes(message.channel.id) &&
-  /(https?:\/\/[^\s]+)/g.test(message.content)
-) {
-  if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await message.delete();
-    return message.channel.send(`${message.author}, 🚫 Links are not allowed here.`);
+// Make sure your event callback is async
+client.on("messageCreate", async (message) => {
+  const antiLinkChannels = loadAntiLink();
+
+  // Ignore bots
+  if (message.author.bot) return;
+
+  if (
+    antiLinkChannels.includes(message.channel.id) &&
+    /(https?:\/\/[^\s]+)/g.test(message.content)
+  ) {
+    // Check if member does NOT have ManageMessages permission
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      try {
+        await message.delete(); // ✅ now allowed
+        message.channel.send(`${message.author}, 🚫 Links are not allowed here.`);
+      } catch (err) {
+        console.error("Failed to delete message:", err);
+      }
+    }
   }
-}
+});
   // 🚫 Bad Words Filter
   const bannedWords = ["badword1", "badword2"];
   if (bannedWords.some(word => message.content.toLowerCase().includes(word))) {
@@ -1379,6 +1392,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
