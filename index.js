@@ -1,4 +1,19 @@
+const { Manager } = require("erela.js");
 
+const manager = new Manager({
+  nodes: [
+    {
+      host: "localhost",
+      port: 2333,
+      password: "youshallnotpass",
+      secure: false
+    }
+  ],
+  send(id, payload) {
+    const guild = client.guilds.cache.get(id);
+    if (guild) guild.shard.send(payload);
+  }
+});
 
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
@@ -335,6 +350,12 @@ client.on("guildMemberRemove", async (member) => {
 
   goodbyeChannel.send({ embeds: [embed] });
 });
+
+client.once("ready", () => {
+  console.log(`Logged in as ${client.user.tag}`);
+  manager.init(client.user.id);
+});
+client.on("raw", (d) => manager.updateVoiceState(d));
 
 //TICKET SUPPORT
 
@@ -1362,6 +1383,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
