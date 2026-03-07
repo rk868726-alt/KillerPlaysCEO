@@ -165,6 +165,10 @@ const manager = new Manager({
   }
 });
 
+manager.on("nodeConnect", node => {
+ console.log(`Lavalink node connected: ${node.options.identifier}`);
+});
+
 const axios = require("axios");
 const YT_FILE = "./youtube.json";
 
@@ -304,10 +308,6 @@ function saveDaily(data) {
 client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
-});
-
-manager.on("nodeConnect", node => {
-  console.log(`Lavalink node connected: ${node.options.identifier}`);
 });
 
 manager.on("trackStart", (player, track) => {
@@ -1421,6 +1421,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
