@@ -306,8 +306,6 @@ client.once("clientReady", () => {
   manager.init(client.user.id);
 });
 
-const { Manager } = require("erela.js");
-
 manager.on("nodeConnect", node => {
   console.log(`Lavalink node connected: ${node.options.identifier}`);
 });
@@ -1423,6 +1421,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
