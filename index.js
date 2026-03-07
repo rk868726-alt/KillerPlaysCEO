@@ -1,19 +1,4 @@
-const { Manager } = require("erela.js");
 
-manager.on("nodeConnect", node => {
-  console.log(`Lavalink node connected: ${node.options.identifier}`);
-});
-
-manager.on("trackStart", (player, track) => {
-  const channel = client.channels.cache.get(player.textChannel);
-  if (channel) channel.send(`🎶 Now playing: **${track.title}**`);
-});
-
-manager.on("queueEnd", player => {
-  const channel = client.channels.cache.get(player.textChannel);
-  if (channel) channel.send("✅ Queue finished.");
-  player.destroy();
-});
 
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
@@ -319,6 +304,23 @@ function saveDaily(data) {
 client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
+});
+
+const { Manager } = require("erela.js");
+
+manager.on("nodeConnect", node => {
+  console.log(`Lavalink node connected: ${node.options.identifier}`);
+});
+
+manager.on("trackStart", (player, track) => {
+  const channel = client.channels.cache.get(player.textChannel);
+  if (channel) channel.send(`🎶 Now playing: **${track.title}**`);
+});
+
+manager.on("queueEnd", player => {
+  const channel = client.channels.cache.get(player.textChannel);
+  if (channel) channel.send("✅ Queue finished.");
+  player.destroy();
 });
 // ================= WELCOME MESSAGE =================
 client.on("guildMemberAdd", async (member) => {
@@ -1447,6 +1449,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
