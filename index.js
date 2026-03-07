@@ -154,7 +154,7 @@ const manager = new Manager({
   nodes: [
     {
       host: "caboose.proxy.rlwy.net",
-      port: 443,
+      port: 2333,
       password: "youshallnotpass",
       secure: false
     }
@@ -1425,6 +1425,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
