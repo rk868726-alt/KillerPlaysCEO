@@ -153,10 +153,11 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-     host: "killerplaysceo-production.up.railway.app",
-     port: 443,
-     password: "youshallnotpass",
-     secure: true
+       identifier: "main",
+      host: "killerplaysceo-production.up.railway.app",
+      port: 443,
+      password: "youshallnotpass",
+      secure: true
     }
   ],
   send(id, payload) {
@@ -1422,6 +1423,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
