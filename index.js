@@ -682,24 +682,7 @@ if (command === "setticket") {
   });
 }
 
-  //ply
 
-  if (message.content.startsWith("!play")) {
-
-    const voiceChannel = message.member.voice.channel;
-    if (!voiceChannel) {
-      return message.reply("Join a voice channel first!");
-    }
-
-    const connection = joinVoiceChannel({
-      channelId: voiceChannel.id,
-      guildId: message.guild.id,
-      adapterCreator: message.guild.voiceAdapterCreator,
-    });
-
-    message.reply("Joined the voice channel!");
-  }
-});
 
 // ✅ SETUP VERIFY PANEL
 if (command === "setupverify") {
@@ -1434,6 +1417,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
