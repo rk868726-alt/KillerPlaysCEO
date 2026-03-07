@@ -833,23 +833,27 @@ if (command === "clear") {
 if (command === "play") {
 
   const query = args.join(" ");
-  const voiceChannel = message.member.voice.channel;
+  if (!query) return message.reply("Provide a song name.");
 
-  if (!voiceChannel) return message.reply("Join a voice channel first.");
+  const vc = message.member.voice.channel;
+  if (!vc) return message.reply("Join voice channel first.");
 
-const player = manager.create({
-  guild: message.guild.id,
-  voiceChannel: message.member.voice.channel.id,
-  textChannel: message.channel.id,
-});
+  const player = manager.create({
+    guild: message.guild.id,
+    voiceChannel: vc.id,
+    textChannel: message.channel.id
+  });
+
+  // 👉 ADD IT HERE
   player.connect();
 
   const res = await manager.search(query, message.author);
 
-  if (res.tracks.length === 0)
+  if (!res.tracks.length)
     return message.reply("No results found.");
 
   player.queue.add(res.tracks[0]);
+
   message.channel.send(`🎵 Playing **${res.tracks[0].title}**`);
 
   if (!player.playing && !player.paused)
@@ -1381,6 +1385,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
