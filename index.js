@@ -160,7 +160,9 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildVoiceStates
+
   ],
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
@@ -1380,6 +1382,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
