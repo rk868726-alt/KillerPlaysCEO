@@ -427,6 +427,23 @@ client.on('messageCreate', async (message) => {
 
 if (message.author.bot || !message.guild) return;
 
+   if (message.content.startsWith("!play")) {
+
+    const voiceChannel = message.member.voice.channel;
+    if (!voiceChannel) {
+      return message.reply("Join a voice channel first!");
+    }
+
+    const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: message.guild.id,
+      adapterCreator: message.guild.voiceAdapterCreator,
+    });
+
+    message.reply("Joined the voice channel!");
+  }
+});
+
 // ===== XP GAIN =====
 const levels = loadLevels();
 const levelChannelData = loadLevelChannel();
@@ -1414,6 +1431,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
