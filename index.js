@@ -149,17 +149,17 @@ const client = new Client({
 const manager = new Manager({
   nodes: [
     {
-            host: "lava.pub", // public Lavalink node
-            port: 443,
-            password: "youshallnotpass",
-            secure: true
+      host: "lavalink.lexnet.cc",
+      port: 443,
+      password: "lexnet",
+      secure: true
     }
   ],
   send(id, payload) {
-        const guild = client.guilds.cache.get(id);
-        if (guild) guild.shard.send(payload);
+    const guild = client.guilds.cache.get(id);
+    if (guild) guild.shard.send(payload);
   }
-});
+});;
 
 manager.on("nodeConnect", node => console.log(`Lavalink Node "${node.options.identifier}" connected.`));
 manager.on("nodeError", (node, error) => console.log(`Node "${node.options.identifier}" error: ${error.message}`));
@@ -1327,6 +1327,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
