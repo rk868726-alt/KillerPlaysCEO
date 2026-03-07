@@ -1,5 +1,5 @@
 
-
+require('dotenv').config();
 const { getData } = require("spotify-url-info");
 const ffmpeg = require('ffmpeg-static');
 const { 
@@ -414,11 +414,9 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 // ================= MESSAGE EVENT =================
-client.on('messageCreate', async (message) => {
+client.on('messageCreate', async(message) => {
 
   if (message.author.bot || !message.guild) return;
-
-if (message.author.bot || !message.guild) return;
 
 
 // ===== XP GAIN =====
@@ -1381,6 +1379,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
