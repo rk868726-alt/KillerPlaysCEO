@@ -48,8 +48,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_KEY,
 });
 
-const player = createAudioPlayer();
-
 // ===== DAILY QUOTES =====
 const quotes = [
 "Believe in yourself and you will be unstoppable.",
@@ -1474,6 +1472,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
