@@ -846,16 +846,17 @@ if (command === "clear") {
 //Join
 
   if (command === "join") {
-  const vc = message.member.voice.channel;
-  if (!vc) return message.reply("Join VC");
+ const vc = message.member.voice.channel;
+ if (!vc) return message.reply("Join VC first");
 
-  const player = manager.create({
-    guild: message.guild.id,
-    voiceChannel: vc.id,
-    textChannel: message.channel.id
-  });
+ const player = manager.create({
+  guild: message.guild.id,
+  voiceChannel: vc.id,
+  textChannel: message.channel.id
+ });
 
-  player.connect();
+ player.connect();
+ message.reply("Joined VC");
 }
 
   
@@ -1421,6 +1422,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
