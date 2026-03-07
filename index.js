@@ -528,7 +528,7 @@ if (db.autoresponder) {
   }
 }
   // ===== COMMANDS =====
-  const prefix = "\";
+  const prefix = "$";
   if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -1362,6 +1362,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
