@@ -521,7 +521,6 @@ if (
   
  
   // ===== SMART ANTI LINK =====
-const { PermissionsBitField } = require('discord.js');
 
 // Make sure your event callback is async
 client.on("messageCreate", async (message) => {
@@ -1392,6 +1391,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
