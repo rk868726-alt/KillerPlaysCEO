@@ -309,6 +309,7 @@ client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
 });
+client.on("raw", (d) => manager.updateVoiceState(d));
 
 manager.on("trackStart", (player, track) => {
   const channel = client.channels.cache.get(player.textChannel);
@@ -1373,7 +1374,6 @@ client.on("messageDelete", (message) => {
     createdAt: message.createdAt
   });
 });
-client.on("raw", (d) => manager.updateVoiceState(d));
 
 client.login(process.env.TOKEN);
 
@@ -1422,6 +1422,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
