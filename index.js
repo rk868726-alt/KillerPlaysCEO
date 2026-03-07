@@ -837,12 +837,11 @@ if (command === "play") {
 
   if (!voiceChannel) return message.reply("Join a voice channel first.");
 
-  const player = manager.create({
-    guild: message.guild.id,
-    voiceChannel: voiceChannel.id,
-    textChannel: message.channel.id
-  });
-
+const player = manager.create({
+  guild: message.guild.id,
+  voiceChannel: message.member.voice.channel.id,
+  textChannel: message.channel.id,
+});
   player.connect();
 
   const res = await manager.search(query, message.author);
@@ -1382,6 +1381,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
