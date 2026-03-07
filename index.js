@@ -3,10 +3,10 @@ const { Manager } = require("erela.js");
 const manager = new Manager({
   nodes: [
     {
-      host: "localhost",
-      port: 2333,
-      password: "youshallnotpass",
-      secure: false
+      host: "lavalink.oops.wtf",
+      port: 443,
+      password: "www.freelavalink.ga",
+      secure: true
     }
   ],
   send(id, payload) {
@@ -1417,6 +1417,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
