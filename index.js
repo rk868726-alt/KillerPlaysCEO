@@ -133,6 +133,8 @@ const {
 } = require('discord.js');
 const fs = require('fs');
 const { checkUploads } = require("./youtubeNotifier");
+const { sendLog } = require("./logger");
+const { EmbedBuilder } = require("discord.js");
 
 const client = new Client({
   intents: [
@@ -346,6 +348,167 @@ client.on("guildMemberAdd", async (member) => {
 
   welcomeChannel.send({ embeds: [embed] });
 });
+
+//LOGS
+
+client.on("guildMemberAdd", member => {
+
+const embed = new EmbedBuilder()
+.setTitle("Member Joined")
+.setColor("Green")
+.addFields(
+{ name: "User", value: `${member.user.tag}` },
+{ name: "ID", value: member.id }
+)
+.setTimestamp();
+
+sendLog(client, embed);
+
+});
+
+client.on("guildMemberRemove", member => {
+
+const embed = new EmbedBuilder()
+.setTitle("Member Left")
+.setColor("Red")
+.addFields(
+{ name: "User", value: member.user.tag },
+{ name: "ID", value: member.id }
+)
+.setTimestamp();
+
+sendLog(client, embed);
+
+});
+
+client.on("messageDelete", message => {
+
+if (!message.guild) return;
+
+const embed = new EmbedBuilder()
+.setTitle("Message Deleted")
+.setColor("Orange")
+.addFields(
+{ name: "User", value: `${message.author?.tag}` },
+{ name: "Channel", value: `${message.channel}` },
+{ name: "Message", value: message.content || "No text" }
+)
+.setTimestamp();
+
+sendLog(message.client, embed);
+
+});
+
+client.on("messageUpdate", (oldMsg, newMsg) => {
+
+if (!oldMsg.guild) return;
+if (oldMsg.content === newMsg.content) return;
+
+const embed = new EmbedBuilder()
+.setTitle("Message Edited")
+.setColor("Yellow")
+.addFields(
+{ name: "User", value: oldMsg.author.tag },
+{ name: "Channel", value: `${oldMsg.channel}` },
+{ name: "Before", value: oldMsg.content || "None" },
+{ name: "After", value: newMsg.content || "None" }
+)
+.setTimestamp();
+
+sendLog(oldMsg.client, embed);
+
+});
+
+client.on("guildBanAdd", async ban => {
+
+const embed = new EmbedBuilder()
+.setTitle("User Banned")
+.setColor("DarkRed")
+.addFields(
+{ name: "User", value: ban.user.tag },
+{ name: "ID", value: ban.user.id }
+)
+.setTimestamp();
+
+sendLog(ban.guild.client, embed);
+
+});
+
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+
+const added = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id));
+const removed = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id));
+
+added.forEach(role => {
+
+const embed = new EmbedBuilder()
+.setTitle("Role Added")
+.setColor("Blue")
+.addFields(
+{ name: "User", value: newMember.user.tag },
+{ name: "Role", value: role.name }
+)
+.setTimestamp();
+
+sendLog(newMember.client, embed);
+
+});
+
+removed.forEach(role => {
+
+const embed = new EmbedBuilder()
+.setTitle("Role Removed")
+.setColor("Purple")
+.addFields(
+{ name: "User", value: newMember.user.tag },
+{ name: "Role", value: role.name }
+)
+.setTimestamp();
+
+sendLog(newMember.client, embed);
+
+});
+
+});
+
+
+client.on("voiceStateUpdate", (oldState, newState) => {
+
+const user = newState.member.user;
+
+if (!oldState.channel && newState.channel) {
+
+const embed = new EmbedBuilder()
+.setTitle("Voice Join")
+.setColor("Green")
+.addFields(
+{ name: "User", value: user.tag },
+{ name: "Channel", value: newState.channel.name }
+)
+.setTimestamp();
+
+sendLog(newState.client, embed);
+
+}
+
+if (oldState.channel && !newState.channel) {
+
+const embed = new EmbedBuilder()
+.setTitle("Voice Leave")
+.setColor("Red")
+.addFields(
+{ name: "User", value: user.tag },
+{ name: "Channel", value: oldState.channel.name }
+)
+.setTimestamp();
+
+sendLog(newState.client, embed);
+
+}
+
+});
+
+
 
 // ================= GOODBYE MESSAGE =================
 client.on("guildMemberRemove", async (member) => {
@@ -1339,6 +1502,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
