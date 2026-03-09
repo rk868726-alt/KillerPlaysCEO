@@ -49,17 +49,6 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
-client.commands = new Map();
-
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-
-
-for (const file of commandFiles) {
-
-  client.commands.set(command.data.name, command);
-
-}
-
 
 const manager = new Manager({
   nodes: [
@@ -262,19 +251,24 @@ client.on("guildMemberAdd", async (member) => {
   welcomeChannel.send({ embeds: [embed] });
 });
 
-//slashcmd
+//daily q
 
-client.on("interactionCreate", async (interaction) => {
+client.on("messageCreate", async message => {
 
-if (!interaction.isChatInputCommand()) return;
+if(message.author.bot) return;
 
-const command = client.commands.get(interaction.commandName);
-if (!command) return;
+if(message.content.startsWith("$setdaily")){
 
-try {
-    await command.execute(interaction);
-} catch (error) {
-    console.error(error);
+const channel = message.mentions.channels.first();
+
+if(!channel){
+return message.reply("❌ Mention a channel.\nExample: `$setdaily #quotes`");
+}
+
+dailyQuotes.setChannel(message.guild.id, channel.id);
+
+message.reply(`✅ Daily quotes will be sent in ${channel}`);
+
 }
 
 });
@@ -1380,6 +1374,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
