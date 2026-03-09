@@ -152,7 +152,7 @@ function getQuote(guildId){
 
 function start(client){
 
-cron.schedule("0 9 * * *", () => {
+cron.schedule("*/1 * * *", () => {
 
     const data = load();
 
@@ -229,3 +229,4 @@ save(data);
 
 
 module.exports = { start, setChannel };
+
