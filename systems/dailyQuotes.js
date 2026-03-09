@@ -26,7 +26,7 @@ const quotes = [
 "Stay hungry. Stay foolish.",
 "Every day is a second chance.",
 "Small progress is still progress.",
-"Focus on the goal, not the obstacle."
+"Focus on the goal, not the obstacle.",
 "Believe in yourself and keep moving forward",
 "Every small step today builds a better tomorrow",
 "Dream big and work hard for it",
@@ -229,4 +229,5 @@ save(data);
 
 
 module.exports = { start, setChannel };
+
 
