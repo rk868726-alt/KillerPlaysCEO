@@ -1,19 +1,17 @@
-const cron = require("node-cron");
 const fs = require("fs");
-const path = require("path");
+const cron = require("node-cron");
 
-const dataPath = path.join(__dirname, "../data/dailyQuotes.json");
+const file = "./data/dailyQuotes.json";
 
-if (!fs.existsSync(dataPath)) {
-    fs.writeFileSync(dataPath, JSON.stringify({}));
-}
+if (!fs.existsSync("./data")) fs.mkdirSync("./data");
+if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({}));
 
 function load() {
-    return JSON.parse(fs.readFileSync(dataPath));
+  return JSON.parse(fs.readFileSync(file));
 }
 
 function save(data) {
-    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
 }
 
 const quotes = [
@@ -183,7 +181,7 @@ cron.schedule("*/1 * * * *", () => {
     timezone:"Asia/Kolkata"
 });
 
-cron.schedule("*/1 * * * *", () => {
+cron.schedule("0 9 * * *", () => {
 
     const data = load();
 
@@ -229,6 +227,7 @@ save(data);
 
 
 module.exports = { start, setChannel };
+
 
 
 
