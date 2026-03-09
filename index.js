@@ -33,6 +33,7 @@ const fs = require('fs');
 const { checkUploads } = require("./youtubeNotifier");
 const { sendLog } = require("./logger");
 const cron = require("node-cron");
+const dailyQuotes = require("./systems/dailyQuotes");
 
 const client = new Client({
   intents: [
@@ -219,6 +220,7 @@ client.once("ready", () => {
   setInterval(() => {
     checkUploads(client);
   }, 300000); // checks every 5 minutes
+  dailyQuotes.start(client);
 });
 client.on("raw", (d) => manager.updateVoiceState(d));
 
@@ -1348,6 +1350,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
