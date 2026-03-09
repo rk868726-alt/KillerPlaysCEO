@@ -27,7 +27,8 @@ const {
   ButtonStyle,
   EmbedBuilder,
   Events,
-  channelType
+  channelType,
+  command
 } = require('discord.js');
 const fs = require('fs');
 const { checkUploads } = require("./youtubeNotifier");
@@ -54,7 +55,6 @@ const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith("
 
 
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
 
   client.commands.set(command.data.name, command);
 
@@ -1380,6 +1380,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
