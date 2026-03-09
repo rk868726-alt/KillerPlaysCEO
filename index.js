@@ -1407,14 +1407,9 @@ client.on("messageReactionRemove", async (reaction, user) => {
   }
 });
 
-const cron = require("node-cron");
-
-client.once("ready", () => {
-
-  console.log(`✅ Logged in as ${client.user.tag}`);
 
   // Runs every day at 9:00 AM
-  cron.schedule("0 9 * * *", () => {
+  cron.schedule("*/1 * * *", () => {
 
     const data = loadDaily();
 
@@ -1501,6 +1496,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
