@@ -183,7 +183,7 @@ cron.schedule("*/1 * * *", () => {
     timezone:"Asia/Kolkata"
 });
 
-cron.schedule("0 21 * * *", () => {
+cron.schedule("*/1 * * *", () => {
 
     const data = load();
 
@@ -229,5 +229,6 @@ save(data);
 
 
 module.exports = { start, setChannel };
+
 
 
