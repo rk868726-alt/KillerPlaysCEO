@@ -48,6 +48,18 @@ const client = new Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"]
 });
 
+client.commands = new Map();
+
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+
+for (const file of commandFiles) {
+
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.data.name, command);
+
+}
+
+
 const manager = new Manager({
   nodes: [
     {
@@ -247,6 +259,23 @@ client.on("guildMemberAdd", async (member) => {
     .setTimestamp();
 
   welcomeChannel.send({ embeds: [embed] });
+});
+
+//slashcmd
+
+client.on("interactionCreate", async (interaction) => {
+
+if (!interaction.isChatInputCommand()) return;
+
+const command = client.commands.get(interaction.commandName);
+if (!command) return;
+
+try {
+    await command.execute(interaction);
+} catch (error) {
+    console.error(error);
+}
+
 });
 
 //LOGS
@@ -1350,6 +1379,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
