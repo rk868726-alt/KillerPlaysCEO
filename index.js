@@ -132,6 +132,7 @@ const {
   channelType
 } = require('discord.js');
 const fs = require('fs');
+const { checkUploads } = require("./youtubeNotifier");
 
 const client = new Client({
   intents: [
@@ -315,6 +316,9 @@ function saveDaily(data) {
 client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
   manager.init(client.user.id);
+  setInterval(() => {
+    checkUploads(client);
+  }, 300000); // checks every 5 minutes
 });
 client.on("raw", (d) => manager.updateVoiceState(d));
 
@@ -1335,6 +1339,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
