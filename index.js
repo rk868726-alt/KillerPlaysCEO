@@ -1438,7 +1438,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
     timezone: "Asia/Kolkata" // Change if needed
   });
 
-});
 
 client.on("messageDelete", (message) => {
   if (!message.guild || message.author?.bot) return;
@@ -1496,6 +1495,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
