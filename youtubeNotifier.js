@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 const API_KEY = "AIzaSyCrQKEbtqANem8RocJM-4CNRtIeIv2hYDs";
 const CHANNEL_ID = "https://www.youtube.com/@Killerplayztamil";
-const DISCORD_CHANNEL_ID = "<#1312097094814666792>";
+const DISCORD_CHANNEL_ID = "1312097094814666792";
 
 let lastVideo = null;
 
@@ -31,5 +31,6 @@ async function checkUploads(client) {
     `🚨 **NEW VIDEO / SHORT / LIVE!**\n\n@everyone\n\n📺 ${video.snippet.title}\n${videoURL}`
   );
 }
+
 
 module.exports = { checkUploads };
