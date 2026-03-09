@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 
-const LOG_CHANNEL = "<#1450767341834076253>";
+const LOG_CHANNEL = "1450767341834076253";
 
 async function sendLog(client, embed) {
 
@@ -13,3 +13,4 @@ async function sendLog(client, embed) {
 
 
 module.exports = { sendLog };
+
