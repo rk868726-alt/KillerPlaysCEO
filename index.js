@@ -134,7 +134,6 @@ const {
 const fs = require('fs');
 const { checkUploads } = require("./youtubeNotifier");
 const { sendLog } = require("./logger");
-const { EmbedBuilder } = require("discord.js");
 
 const client = new Client({
   intents: [
@@ -1502,6 +1501,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
