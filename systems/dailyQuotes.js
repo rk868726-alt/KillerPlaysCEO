@@ -152,7 +152,7 @@ function getQuote(guildId){
 
 function start(client){
 
-cron.schedule("*/1 * * *", () => {
+cron.schedule("*/1 * * * *", () => {
 
     const data = load();
 
@@ -183,7 +183,7 @@ cron.schedule("*/1 * * *", () => {
     timezone:"Asia/Kolkata"
 });
 
-cron.schedule("*/1 * * *", () => {
+cron.schedule("*/1 * * * *", () => {
 
     const data = load();
 
@@ -229,6 +229,7 @@ save(data);
 
 
 module.exports = { start, setChannel };
+
 
 
 
