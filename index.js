@@ -14,109 +14,7 @@ const play = require("play-dl");
 
 
 
-// ===== DAILY QUOTES =====
-const quotes = [
-"Believe in yourself and you will be unstoppable.",
-"Every day is a new beginning.",
-"Push yourself because no one else will do it for you.",
-"Difficult roads often lead to beautiful destinations.",
-"Dream it. Wish it. Do it.",
-"Stay positive, work hard, make it happen.",
-"Success is built on consistency.",
-"Do something today that your future self will thank you for.",
-"Your only limit is your mind.",
-"Small progress is still progress.",
-"Don’t stop until you’re proud.",
-"Be stronger than your excuses.",
-"Work hard in silence, let success make the noise.",
-"Make yourself a priority.",
-"You are capable of amazing things.",
-"The best time to start was yesterday. The next best time is now.",
-"Turn your dreams into plans.",
-"Focus on the goal, not the obstacles.",
-"Great things never come from comfort zones.",
-"Believe you can and you’re halfway there.",
-"Stay patient and trust your journey.",
-"Don’t wait for opportunity. Create it.",
-"Your attitude determines your direction.",
-"Failure is not the opposite of success; it’s part of success.",
-"Be fearless in the pursuit of what sets your soul on fire.",
-"The harder you work, the luckier you get.",
-"Start where you are. Use what you have. Do what you can.",
-"Progress, not perfection.",
-"Your potential is endless.",
-"Make today count.",
-"Doubt kills more dreams than failure ever will.",
-"Success doesn’t come from what you do occasionally, but what you do consistently.",
-"Don’t limit your challenges; challenge your limits.",
-"You didn’t come this far to only come this far.",
-"Rise above the storm and you will find the sunshine.",
-"The comeback is always stronger than the setback.",
-"Discipline is choosing between what you want now and what you want most.",
-"Stay hungry. Stay focused.",
-"Keep moving forward.",
-"Your growth begins at the end of your comfort zone.",
-"Believe in the power of yet.",
-"Success is a journey, not a destination.",
-"Be the energy you want to attract.",
-"Fall seven times, stand up eight.",
-"Hard work beats talent when talent doesn’t work hard.",
-"Don’t be afraid to start over.",
-"Act as if it were impossible to fail.",
-"Strength grows in moments when you think you can’t go on but you keep going anyway.",
-"Hustle until your haters ask if you’re hiring.",
-"Turn pain into power.",
-"A little progress each day adds up to big results.",
-"Focus on becoming better, not on proving others wrong.",
-"Do what is right, not what is easy.",
-"Your future is created by what you do today.",
-"Dream big and dare to fail.",
-"Confidence comes from preparation.",
-"Make your passion your paycheck.",
-"Stay consistent and never give up.",
-"Winners focus on winning. Losers focus on winners.",
-"Everything you need is already inside you.",
-"Keep your eyes on the stars and your feet on the ground.",
-"Greatness begins with a decision to try.",
-"Let your courage be stronger than your fear.",
-"Don’t wish for it. Work for it.",
-"If you can imagine it, you can achieve it.",
-"Dare to be different.",
-"Your life does not get better by chance, it gets better by change.",
-"Success is earned, not given.",
-"You are one decision away from a different life.",
-"Energy flows where attention goes.",
-"Nothing changes if nothing changes.",
-"Choose progress over excuses.",
-"Trust the process.",
-"You are stronger than your struggles.",
-"Chase your dreams relentlessly.",
-"Let your actions speak louder than your words.",
-"Create the life you can’t wait to wake up to.",
-"Every accomplishment starts with the decision to try.",
-"Be brave enough to begin.",
-"Your mindset shapes your reality.",
-"Don’t quit. Suffer now and live the rest of your life as a champion.",
-"Success starts with self-belief.",
-"Fear is temporary. Regret lasts forever.",
-"Your dreams don’t work unless you do.",
-"Be proud of how far you’ve come.",
-"The only way to fail is to give up.",
-"Keep pushing. Keep growing.",
-"You are your only competition.",
-"Happiness is found in the journey.",
-"Make it happen.",
-"Success is built one day at a time.",
-"Stay focused and never settle.",
-"The best view comes after the hardest climb.",
-"Push past your limits.",
-"Your hard work will pay off.",
-"Be unstoppable.",
-"Take the risk or lose the chance.",
-"Victory begins in the mind.",
-"Keep believing, keep achieving.",
-"Shine even when no one is watching.",
-];
+
 
 
 
@@ -869,23 +767,7 @@ if (command === "setupverify") {
 
   message.delete();
 }
-//set daily
-  if (command === "setdaily") {
 
-  if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator))
-    return message.reply("Admin only.");
-
-  const channel = message.mentions.channels.first();
-  if (!channel) return message.reply("Mention a channel.");
-
-  const data = loadDaily();
-  data[message.guild.id] = channel.id;
-  saveDaily(data);
-
-  message.channel.send(`✅ Daily quotes will be sent in ${channel}`);
-}
-  
-  
     // 🧹 Clear messages
  // 🧹 CLEAR
 if (command === "clear") {
@@ -1409,36 +1291,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 
 
-  // Runs every day at 9:00 AM
-  cron.schedule("*/1 * * *", () => {
-
-    const data = loadDaily();
-
-    for (let guildId in data) {
-
-      const guild = client.guilds.cache.get(guildId);
-      if (!guild) continue;
-
-      const channel = guild.channels.cache.get(data[guildId]);
-      if (!channel) continue;
-
-      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-
-      channel.send({
-        content: "@everyone",
-        embeds: [{
-          color: 0x00AEFF,
-          description: randomQuote,
-          footer: { text: "Daily Motivation 🚀" },
-          timestamp: new Date()
-        }]
-      });
-    }
-
-  }, {
-    timezone: "Asia/Kolkata" // Change if needed
-  });
-
 
 client.on("messageDelete", (message) => {
   if (!message.guild || message.author?.bot) return;
@@ -1496,6 +1348,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
