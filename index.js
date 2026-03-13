@@ -33,6 +33,7 @@ const {
 const fs = require('fs');
 const { checkUploads } = require("./youtubeNotifier");
 const { sendLog } = require("./logger");
+const { sendLog } = require("./logger_ht");
 const cron = require("node-cron");
 const dailyQuotes = require("./systems/dailyQuotes");
 
@@ -1374,6 +1375,7 @@ cron.schedule("*/5 * * * *", async () => {
   }
 
 });
+
 
 
 
