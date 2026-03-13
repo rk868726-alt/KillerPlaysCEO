@@ -7,7 +7,7 @@ const LOG_CHANNEL2 = "1482018504394801234";
 async function sendLog(client, embed) {
 
     const channel = client.channels.cache.get(LOG_CHANNEL);
-        const channel = client.channels.cache.get(LOG_CHANNEL2);
+    client.channels.cache.get(LOG_CHANNEL2);
 
     if (!channel) return;
 
@@ -17,6 +17,7 @@ async function sendLog(client, embed) {
 
 
 module.exports = { sendLog };
+
 
 
 
