@@ -1316,31 +1316,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
   }
 });
 
-client.on('messageCreate', async (message) => {
 
-  if (message.author.bot || !message.guild) return;
-
-  // ===== MIRROR MESSAGE =====
-  const mirrorData = loadMirror();
-
-  if (mirrorData[message.guild.id]?.length) {
-    const pairs = mirrorData[message.guild.id];
-
-    for (let pair of pairs) {
-      if (message.channel.id === pair.source) {
-
-        const targetChannel = message.guild.channels.cache.get(pair.target);
-        if (!targetChannel) continue;
-
-        const embed = new EmbedBuilder()
-          .setColor("Blue")
-          .setAuthor({
-            name: message.author.tag,
-            iconURL: message.author.displayAvatarURL()
-          })
-          .setDescription(message.content || "*No text content*")
-          .setFooter({ text: `Mirrored Message` })
-          .setTimestamp();
 
 
 
