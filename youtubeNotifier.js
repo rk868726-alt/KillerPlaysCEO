@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require(url);
 
 const API_KEY = "AIzaSyCrQKEbtqANem8RocJM-4CNRtIeIv2hYDs";
 const CHANNEL_ID = "https://www.youtube.com/@Killerplayztamil";
